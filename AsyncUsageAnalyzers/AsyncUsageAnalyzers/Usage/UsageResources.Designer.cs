@@ -62,6 +62,24 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dont use Thread.Sleep() In a sync method..
+        /// </summary>
+        internal static string DontUseThreadSleepInAsyncMethodDescription {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The asynchronus method &apos;{0}&apos; should not call Thread.Sleep().
+        /// </summary>
+        internal static string DontUseThreadSleepInAsyncMethodMessageFormat {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Asynchronous methods should include a CancellationToken parameter..
         /// </summary>
         internal static string IncludeCancellationParameterDescription {
