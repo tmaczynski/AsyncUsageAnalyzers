@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using System.Threading;
+
 namespace AsyncUsageAnalyzers.Usage
 {
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -72,13 +74,13 @@ namespace AsyncUsageAnalyzers.Usage
         // TODO: remove code duplication between this and IncludeCancellationParameterAnalyzer's Analyzer inner class
         private class Analyzer
         {
-            private readonly Compilation compilation;
             private readonly ConcurrentDictionary<SyntaxTree, bool> generatedDocumentCache;
+            private INamedTypeSymbol cancellationTokenType;
 
             public Analyzer(ConcurrentDictionary<SyntaxTree, bool> generatedDocumentCache, Compilation compilation)
             {
                 this.generatedDocumentCache = generatedDocumentCache;
-                this.compilation = compilation;
+                this.cancellationTokenType = compilation.GetTypeByMetadataName(typeof(CancellationToken).FullName);
             }
 
             internal void HandleMethodDeclaration(SymbolAnalysisContext context)
