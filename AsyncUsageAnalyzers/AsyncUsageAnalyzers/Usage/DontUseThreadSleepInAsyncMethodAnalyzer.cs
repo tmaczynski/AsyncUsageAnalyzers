@@ -3,8 +3,6 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using System.Threading;
-
 namespace AsyncUsageAnalyzers.Usage
 {
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -12,10 +10,12 @@ namespace AsyncUsageAnalyzers.Usage
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
     using System.Collections.Immutable;
     using System.Collections.Concurrent;
+    
 
     /// <summary>
     /// This analyzer reports a diagnostic if an asynchronous if Thread.Sleep() method is called inside async method.
