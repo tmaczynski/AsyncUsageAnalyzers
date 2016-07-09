@@ -118,10 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DontUseThreadSleepInAsyncMethodDescription" xml:space="preserve">
-    <value>Dont use Thread.Sleep() In a sync method.</value>
+    <value>Don't use Thread.Sleep() In a sync method.</value>
   </data>
   <data name="DontUseThreadSleepInAsyncMethodMessageFormat" xml:space="preserve">
     <value>The asynchronus method '{0}' should not call Thread.Sleep()</value>
+  </data>
+  <data name="DontUseThreadSleepInAsyncMethodTitle" xml:space="preserve">
+    <value>Don't use Thread.Sleep() In Async Method</value>
   </data>
   <data name="IncludeCancellationParameterDescription" xml:space="preserve">
     <value>Asynchronous methods should include a CancellationToken parameter.</value>
