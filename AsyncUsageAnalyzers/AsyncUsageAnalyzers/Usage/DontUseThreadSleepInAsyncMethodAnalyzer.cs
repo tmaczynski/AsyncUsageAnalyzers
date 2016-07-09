@@ -26,15 +26,12 @@ namespace AsyncUsageAnalyzers.Usage
     internal class DontUseThreadSleepInAsyncMethodAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// Gets ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncMethodAnalyzer"/> analyzer.
+        /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncMethodAnalyzer"/> analyzer.
         /// </summary>
-        /// <value>
-        /// ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncMethodAnalyzer"/> analyzer.
-        /// </value>
         public const string DiagnosticId = "DontUseThreadSleepInAsyncMethod";
 
         private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.IncludeCancellationParameterTitle),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncMethodTitle),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly LocalizableString MessageFormat =
@@ -63,10 +60,10 @@ namespace AsyncUsageAnalyzers.Usage
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            // This lines can be commented out when Microsoft.CodeAnalysis is upgraded from version 1.0.0.0 to a version that supports that operations
-            // context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            // context.EnableConcurrentExecution();
-            //
+            // Code below requires Microsoft.CodeAnalysis to be upgraded from version 1.0.0.0 to a version that supports that operations
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.EnableConcurrentExecution();
+
             context.RegisterSyntaxNodeAction(HandleMethodDeclarationAction, SyntaxKind.MethodDeclaration);
         }
 
@@ -90,12 +87,13 @@ namespace AsyncUsageAnalyzers.Usage
                     return methodSymbol != null
                            && methodSymbol.Name == "Sleep"
                            && methodSymbol.ContainingNamespace.Name == "Threading"; // TODO: add additional checks
-                });
+                })
+                .ToList();
 
             foreach (var invocation in invocationsOfThreadSleep)
             {
-                //var methodName = methodDeclaration.Identifier.Text;
-                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocation.GetLocation()));
+                var methodName = methodDeclaration.Identifier.Text;
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocation.GetLocation(), methodName));
             }
         }
 
