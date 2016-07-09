@@ -62,7 +62,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dont use Thread.Sleep() In a sync method..
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In a sync method..
         /// </summary>
         internal static string DontUseThreadSleepInAsyncMethodDescription {
             get {
@@ -76,6 +76,15 @@ namespace AsyncUsageAnalyzers.Usage {
         internal static string DontUseThreadSleepInAsyncMethodMessageFormat {
             get {
                 return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In Async Method.
+        /// </summary>
+        internal static string DontUseThreadSleepInAsyncMethodTitle {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodTitle", resourceCulture);
             }
         }
         
