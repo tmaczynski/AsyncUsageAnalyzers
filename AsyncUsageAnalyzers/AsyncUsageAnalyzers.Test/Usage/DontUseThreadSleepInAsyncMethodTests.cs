@@ -22,19 +22,27 @@ namespace AsyncUsageAnalyzers.Test.Usage
         public async Task TestThreadSleepInSimpleMethodAsync()
         {
             string testCode = @"
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 class ClassA
 {
-    public async void Method1Async()
+    public async Task<int> Method1Async()
     {
         Thread.Sleep(1000);
-        await Task.FromResult(0); 
+        System.Threading.Thread.Sleep(1000);
+        global::System.Threading.Thread.Sleep(1000);
+        
+        return await Task.FromResult(0); 
     }
 }";
 
-            var expected = this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(9, 9) ;
+            var expected = new []
+            {
+                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(9, 9),
+                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(10, 9),
+                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(11, 9)
+            };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
