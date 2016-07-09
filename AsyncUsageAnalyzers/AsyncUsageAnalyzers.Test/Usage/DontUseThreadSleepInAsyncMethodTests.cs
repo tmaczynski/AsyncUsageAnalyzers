@@ -34,7 +34,7 @@ class ClassA
     }
 }";
 
-            DiagnosticResult expected = this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(9, 9);
+            var expected = this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(9, 9) ;
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
