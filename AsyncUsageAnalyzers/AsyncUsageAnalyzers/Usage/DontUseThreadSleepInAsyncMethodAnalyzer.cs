@@ -5,6 +5,7 @@
 
 namespace AsyncUsageAnalyzers.Usage
 {
+    using AsyncUsageAnalyzers.Helpers;
     using Microsoft.CodeAnalysis.Diagnostics;
     using System;
     using System.Collections.Generic;
@@ -66,7 +67,8 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static void HandleCompilationStart(CompilationStartAnalysisContext context)
         {
-            Analyzer analyzer = new Analyzer(context.Compilation.GetOrCreateGeneratedDocumentCache(),
+            Analyzer analyzer = new Analyzer(
+                context.Compilation.GetOrCreateGeneratedDocumentCache(),
                 context.Compilation);
             context.RegisterSymbolAction(analyzer.HandleMethodDeclaration, SymbolKind.Method);
         }
@@ -80,12 +82,129 @@ namespace AsyncUsageAnalyzers.Usage
             public Analyzer(ConcurrentDictionary<SyntaxTree, bool> generatedDocumentCache, Compilation compilation)
             {
                 this.generatedDocumentCache = generatedDocumentCache;
-                this.cancellationTokenType = compilation.GetTypeByMetadataName(typeof(CancellationToken).FullName);
+                this.cancellationTokenType = compilation.GetTypeByMetadataName("System.Threading.Thread");
             }
 
             internal void HandleMethodDeclaration(SymbolAnalysisContext context)
             {
-                throw new NotImplementedException();
+                var symbol = (IMethodSymbol)context.Symbol;
+                // TODO: decide whether to subscribe for methods or method calls
+                // http://stackoverflow.com/questions/29614112/how-to-get-invoked-method-name-in-roslyn
+                // begin my section
+                //var methodRoot = symbol.Construct()
+                //methodRoot.SyntaxTree
+                // end my section
+
+                if (this.cancellationTokenType == null)
+                {
+                    return;
+                }
+
+                if (symbol.DeclaredAccessibility == Accessibility.Private || symbol.DeclaredAccessibility == Accessibility.NotApplicable)
+                {
+                    return;
+                }
+
+                if (symbol.IsImplicitlyDeclared)
+                {
+                    return;
+                }
+
+                switch (symbol.MethodKind)
+                {
+                    case MethodKind.LambdaMethod:
+                    case MethodKind.Constructor:
+                    case MethodKind.Conversion:
+                    case MethodKind.UserDefinedOperator:
+                    case MethodKind.PropertyGet:
+                    case MethodKind.PropertySet:
+                    case MethodKind.StaticConstructor:
+                    case MethodKind.BuiltinOperator:
+                    case MethodKind.Destructor:
+                    case MethodKind.EventAdd:
+                    case MethodKind.EventRaise:
+                    case MethodKind.EventRemove:
+                        // These can't be async
+                        return;
+
+                    case MethodKind.DelegateInvoke:
+                        // Not sure if this is reachable
+                        return;
+
+                    case MethodKind.ExplicitInterfaceImplementation:
+                        // These are ignored
+                        return;
+
+                    case MethodKind.ReducedExtension:
+                    case MethodKind.Ordinary:
+                    case MethodKind.DeclareMethod:
+                    default:
+                        break;
+                }
+
+                if (!symbol.IsInAnalyzedSource(this.generatedDocumentCache, context.CancellationToken))
+                {
+                    return;
+                }
+
+                if (!symbol.HasAsyncSignature())
+                {
+                    return;
+                }
+
+                if (symbol.IsOverrideOrImplementation())
+                {
+                    return;
+                }
+
+                if (symbol.IsTestMethod())
+                {
+                    return;
+                }
+
+                foreach (var parameterSymbol in symbol.Parameters)
+                {
+                    if (parameterSymbol.RefKind == RefKind.Out)
+                    {
+                        continue;
+                    }
+
+                    INamedTypeSymbol parameterType = parameterSymbol.Type as INamedTypeSymbol;
+                    if (this.cancellationTokenType.Equals(parameterType))
+                    {
+                        return;
+                    }
+                }
+
+                foreach (var parameterSymbol in symbol.Parameters)
+                {
+                    if (parameterSymbol.RefKind == RefKind.Out)
+                    {
+                        continue;
+                    }
+
+                    foreach (var member in parameterSymbol.Type.GetMembers(nameof(CancellationToken)))
+                    {
+                        if (member.Kind != SymbolKind.Property)
+                        {
+                            continue;
+                        }
+
+                        if (member.DeclaredAccessibility != Accessibility.Public)
+                        {
+                            continue;
+                        }
+
+                        var propertySymbol = (IPropertySymbol)member;
+                        if (this.cancellationTokenType.Equals(propertySymbol.Type))
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, symbol.Locations[0], symbol.Name));
+
             }
         }
     }
