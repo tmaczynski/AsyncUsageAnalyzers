@@ -65,6 +65,7 @@ namespace AsyncUsageAnalyzers.Usage
             context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(HandleMethodDeclarationAction, SyntaxKind.MethodDeclaration);
+            // TODO: extend this analysis to async lambda expression and anonymous methods
         }
 
         private static void HandleMethodDeclaration(SyntaxNodeAnalysisContext context)
