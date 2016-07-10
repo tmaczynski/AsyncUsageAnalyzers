@@ -87,7 +87,7 @@ namespace AsyncUsageAnalyzers.Usage
                     var methodSymbol = context.SemanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
                     return methodSymbol != null
                            && methodSymbol.Name == "Sleep"
-                           && methodSymbol.ContainingNamespace.Name == "Threading"; // TODO: add additional checks
+                           && methodSymbol.ContainingNamespace.Name == "Threading"; // TODO: add check which uses threadTypeMetadata
                 })
                 .ToList();
 
