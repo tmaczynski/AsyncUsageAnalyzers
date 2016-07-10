@@ -19,7 +19,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     public class DontUseThreadSleepInAsyncMethodTests : DiagnosticVerifier
     {
         [Fact]
-        public async Task TestThreadSleepInSimpleMethodAsync()
+        public async Task TestThreadSleepInAsyncMethodAsync()
         {
             string testCode = @"
 using System.Threading;
@@ -46,6 +46,25 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
+        public async Task TestThreadSleepInNonAsyncMethodAsync()
+        {
+            string testCode = @"
+using System.Threading.Tasks;
+using System.Threading;
+
+class ClassA
+{
+    public void Method1Async()
+    {
+        Thread.Sleep(1000);
+        System.Threading.Thread.Sleep(1000);
+        global::System.Threading.Thread.Sleep(1000);
+    }
+}";
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
         [Fact]
         public async Task TestTaskDelayInSimpleMethodAsync()
         {
@@ -55,10 +74,10 @@ using System.Threading;
 
 class ClassA
 {
-    public async void Method1Async()
+    public async Task<int> Method1Async()
     {
         await Task.Delay(1000);
-        await Task.FromResult(0); 
+        return await Task.FromResult(0); 
     }
 }";
 
