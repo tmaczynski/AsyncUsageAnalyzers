@@ -81,13 +81,19 @@ namespace AsyncUsageAnalyzers.Usage
             var invocationsWithinTheMethod = context.Node.DescendantNodes()
                 .OfType<InvocationExpressionSyntax>();
 
+            // TODO: add check which uses threadTypeMetadata
             var invocationsOfThreadSleep = invocationsWithinTheMethod
                 .Where(invocation =>
                 {
                     var methodSymbol = context.SemanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
+
+                    // TODO: simplify this
                     return methodSymbol != null
                            && methodSymbol.Name == "Sleep"
-                           && methodSymbol.ContainingNamespace.Name == "Threading"; // TODO: add check which uses threadTypeMetadata
+                           && methodSymbol.ContainingNamespace.Name == "Threading"
+                           && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System"
+                           && methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null;
+
                 })
                 .ToList();
 
