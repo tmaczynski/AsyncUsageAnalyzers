@@ -76,25 +76,28 @@ namespace AsyncUsageAnalyzers.Usage
 
             // This check aims at increasing the performance.
             // Thanks to it, getting a semantic model in not necessary in majority of cases
-            if (invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
+            if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
             {
-                var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
-                if (methodSymbol == null)
-                {
-                    return;
-                }
-
-                var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
-                if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
-                {
-                    return;
-                }
-
-                if (methodSymbol.Name == "Sleep")
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
-                }
+                return;
             }
+
+            var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
+            if (methodSymbol == null)
+            {
+                return;
+            }
+
+            var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
+            if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
+            {
+                return;
+            }
+
+            if (methodSymbol.Name == "Sleep")
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
+            }
+            
 
             /*
             if (!HasAsyncMethodModifier(methodDeclaration))
