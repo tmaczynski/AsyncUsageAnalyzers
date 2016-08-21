@@ -66,7 +66,7 @@ namespace AsyncUsageAnalyzers.Usage
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(HandleInvocationExpessionAction, /* SyntaxKind.SimpleMemberAccessExpression, */SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(HandleInvocationExpessionAction, SyntaxKind.InvocationExpression);
             // TODO: extend this analysis to async lambda expression and anonymous methods
         }
 
