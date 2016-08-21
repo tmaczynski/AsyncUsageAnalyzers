@@ -78,17 +78,19 @@ namespace AsyncUsageAnalyzers.Usage
             // Thanks to it, getting a semantic model in not necessary in majority of cases
             if (invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
             {
-                //throw new Exception("OK");
                 var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
+                if (methodSymbol == null)
+                {
+                    return;
+                }
 
-                // TODO: simplify this
-                var isThreadSleep = methodSymbol != null
-                                    && methodSymbol.Name == "Sleep"
-                                    && methodSymbol.ContainingNamespace.Name == "Threading"
-                                    && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System";
-                       //&& methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null; // TODO: hendle global namespace
+                var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
+                if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
+                {
+                    return;
+                }
 
-                if (isThreadSleep)
+                if (methodSymbol.Name == "Sleep")
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
                 }
@@ -101,7 +103,7 @@ namespace AsyncUsageAnalyzers.Usage
             }
             */
             
-            //var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
+            //
 
             //var invocationsWithinTheMethod = context.Node.DescendantNodes()
             //    .OfType<InvocationExpressionSyntax>();
