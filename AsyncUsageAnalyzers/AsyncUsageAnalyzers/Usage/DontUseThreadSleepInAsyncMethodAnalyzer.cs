@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using System.Linq.Expressions;
+
 namespace AsyncUsageAnalyzers.Usage
 {
     using AsyncUsageAnalyzers.Helpers;
@@ -51,7 +53,7 @@ namespace AsyncUsageAnalyzers.Usage
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning,
                 AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
-        private static readonly Action<SyntaxNodeAnalysisContext> HandleMethodDeclarationAction = HandleMethodDeclaration;
+        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpessionAction = HandleMethodDeclaration;
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -64,44 +66,67 @@ namespace AsyncUsageAnalyzers.Usage
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(HandleMethodDeclarationAction, SyntaxKind.MethodDeclaration);
+            context.RegisterSyntaxNodeAction(HandleInvocationExpessionAction, /* SyntaxKind.SimpleMemberAccessExpression, */SyntaxKind.InvocationExpression);
             // TODO: extend this analysis to async lambda expression and anonymous methods
         }
 
         private static void HandleMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var methodDeclaration = (MethodDeclarationSyntax)context.Node;
+            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+            // This check aims at increasing the performance.
+            // Thanks to it, getting a semantic model in not necessary in majority of cases
+            if (invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
+            {
+                //throw new Exception("OK");
+                var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
+
+                // TODO: simplify this
+                var isThreadSleep = methodSymbol != null
+                                    && methodSymbol.Name == "Sleep"
+                                    && methodSymbol.ContainingNamespace.Name == "Threading"
+                                    && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System";
+                       //&& methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null; // TODO: hendle global namespace
+
+                if (isThreadSleep)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
+                }
+            }
+
+            /*
             if (!HasAsyncMethodModifier(methodDeclaration))
             {
                 return;
             }
+            */
+            
+            //var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
 
-            var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
+            //var invocationsWithinTheMethod = context.Node.DescendantNodes()
+            //    .OfType<InvocationExpressionSyntax>();
 
-            var invocationsWithinTheMethod = context.Node.DescendantNodes()
-                .OfType<InvocationExpressionSyntax>();
+            //// TODO: add check which uses threadTypeMetadata
+            //var invocationsOfThreadSleep = invocationsWithinTheMethod
+            //    .Where(invocation =>
+            //    {
+            //        var methodSymbol = context.SemanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
 
-            // TODO: add check which uses threadTypeMetadata
-            var invocationsOfThreadSleep = invocationsWithinTheMethod
-                .Where(invocation =>
-                {
-                    var methodSymbol = context.SemanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
+            //        // TODO: simplify this
+            //        return methodSymbol != null
+            //               && methodSymbol.Name == "Sleep"
+            //               && methodSymbol.ContainingNamespace.Name == "Threading"
+            //               && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System"
+            //               && methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null;
 
-                    // TODO: simplify this
-                    return methodSymbol != null
-                           && methodSymbol.Name == "Sleep"
-                           && methodSymbol.ContainingNamespace.Name == "Threading"
-                           && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System"
-                           && methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null;
+            //    })
+            //    .ToList();
 
-                })
-                .ToList();
-
-            foreach (var invocation in invocationsOfThreadSleep)
-            {
-                var methodName = methodDeclaration.Identifier.Text;
-                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocation.GetLocation(), methodName));
-            }
+            //foreach (var invocation in invocationsOfThreadSleep)
+            //{
+            //    //var methodName = methodDeclaration.Identifier.Text;
+            //    context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocation.GetLocation(), string.Empty /* methodName */));
+            //}
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
