@@ -62,7 +62,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In a sync method..
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() in a aync code.
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeDescription {
             get {
@@ -71,7 +71,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The asynchronus method &apos;{0}&apos; should not call Thread.Sleep().
+        ///   Looks up a localized string similar to The asynchronus {0} &apos;{0}&apos; should not call Thread.Sleep().
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeMessageFormat {
             get {
@@ -80,7 +80,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In Async Method.
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In async code.
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeTitle {
             get {
@@ -112,6 +112,24 @@ namespace AsyncUsageAnalyzers.Usage {
         internal static string IncludeCancellationParameterTitle {
             get {
                 return ResourceManager.GetString("IncludeCancellationParameterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to lambda function.
+        /// </summary>
+        internal static string LambdaFunction {
+            get {
+                return ResourceManager.GetString("LambdaFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to method.
+        /// </summary>
+        internal static string Method {
+            get {
+                return ResourceManager.GetString("Method", resourceCulture);
             }
         }
         

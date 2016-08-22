@@ -107,7 +107,7 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), parentMethodDeclaration.Identifier));
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, parentMethodDeclaration.Identifier));
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
