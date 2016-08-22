@@ -39,9 +39,9 @@ class ClassA
 
             var expected = new []
             {
-                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(9, 9),
-                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(10, 9),
-                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(11, 9)
+                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(9, 9),
+                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9),
+                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(11, 9)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
@@ -68,7 +68,7 @@ class ClassA
 }";
             var expected = new[]
 {
-                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(12, 13),
+                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(12, 13),
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
@@ -93,7 +93,7 @@ class ClassA
 
             var expected = new[]
             {
-                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(10, 9),
+                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9),
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
