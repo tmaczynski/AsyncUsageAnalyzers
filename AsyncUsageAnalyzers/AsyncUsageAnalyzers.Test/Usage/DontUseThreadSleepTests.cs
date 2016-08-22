@@ -114,8 +114,14 @@ class ClassA
         global::System.Threading.Thread.Sleep(1000);
     }
 }";
+            var expected = new[]
+{
+                this.CSharpDiagnostic().WithLocation(9, 9),
+                this.CSharpDiagnostic().WithLocation(10, 9),
+                this.CSharpDiagnostic().WithLocation(11, 9)
+            };
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
         [Fact]
