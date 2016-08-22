@@ -62,6 +62,15 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() .
+        /// </summary>
+        internal static string DontUseThreadSleepDescription {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() in a aync code.
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeDescription {
@@ -71,7 +80,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The asynchronus {0} &apos;{0}&apos; should not call Thread.Sleep().
+        ///   Looks up a localized string similar to The asynchronus {0} &apos;{1}&apos; should not call Thread.Sleep().
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeMessageFormat {
             get {
@@ -85,6 +94,24 @@ namespace AsyncUsageAnalyzers.Usage {
         internal static string DontUseThreadSleepInAsyncCodeTitle {
             get {
                 return ResourceManager.GetString("DontUseThreadSleepInAsyncCodeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thread.Sleep() should not be used.
+        /// </summary>
+        internal static string DontUseThreadSleepMessageFormat {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep().
+        /// </summary>
+        internal static string DontUseThreadSleepTitle {
+            get {
+                return ResourceManager.GetString("DontUseThreadSleepTitle", resourceCulture);
             }
         }
         
