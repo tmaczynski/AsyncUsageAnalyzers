@@ -46,6 +46,33 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
+
+        [Fact]
+        public async Task TestThreadSleepInAsyncLambdaAsync()
+        {
+            string testCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public void BadExample()
+    {
+        Func<Task> testFunc = async () =>
+        {
+            Thread.Sleep(1);
+            await Task.FromResult(1);
+        };
+    }
+}";
+            var expected = new[]
+{
+                this.CSharpDiagnostic().WithArguments("Method1Async").WithLocation(12, 13),
+            };
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+        }
+
         [Fact]
         public async Task TestThreadSleepStaticImportInAsyncMethodAsync()
         {
