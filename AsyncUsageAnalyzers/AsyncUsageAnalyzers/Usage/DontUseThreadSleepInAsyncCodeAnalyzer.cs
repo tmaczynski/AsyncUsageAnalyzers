@@ -3,8 +3,6 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using System.Linq.Expressions;
-
 namespace AsyncUsageAnalyzers.Usage
 {
     using AsyncUsageAnalyzers.Helpers;
@@ -19,7 +17,6 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using System.Collections.Immutable;
-    using System.Collections.Concurrent;
 
     /// <summary>
     /// This analyzer reports a diagnostic if Thread.Sleep() method is called inside async method.
@@ -30,7 +27,7 @@ namespace AsyncUsageAnalyzers.Usage
         /// <summary>
         /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncCodeAnalyzer"/> analyzer.
         /// </summary>
-        public const string DiagnosticId = "DontUseThreadSleepInAsyncMethod";
+        public const string DiagnosticId = "DontUseThreadSleepInAsyncCode";
 
         private static readonly LocalizableString Title =
             new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle),
@@ -47,7 +44,7 @@ namespace AsyncUsageAnalyzers.Usage
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string HelpLink =
-            "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleepInAsyncMethod.md";
+            "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleepInAsyncCode.md";
 
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning,
