@@ -80,6 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Usage\DontUseThreadSleep.cs" />
     <Compile Include="Usage\DontUseThreadSleepInAsyncCodeAnalyzer.cs" />
     <Compile Include="Usage\IncludeCancellationParameterAnalyzer.cs" />
     <Compile Include="Usage\UsageResources.Designer.cs">
@@ -108,6 +109,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Usage\UsageResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UsageResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
