@@ -16,7 +16,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public class DontUseThreadSleepInAsyncMethodTests : DiagnosticVerifier
+    public class DontUseThreadSleepInAsyncCodeTests : DiagnosticVerifier
     {
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
@@ -139,7 +139,7 @@ class ClassA
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
-            yield return new DontUseThreadSleepInAsyncMethodAnalyzer();
+            yield return new DontUseThreadSleepInAsyncCodeAnalyzer();
         }
     }
 }
