@@ -86,7 +86,7 @@ namespace AsyncUsageAnalyzers.Usage
             var methodName = "Sleep";
 
             IMethodSymbol methodSymbol;
-            if (!GetMethodSymbolByFullyQualifiedNameAndMethodName(semanticModel, invocationExpression, fullyQualifiedName, methodName, out methodSymbol))
+            if (!GetMethodSymbolByFullyQualifiedTypeNameAndMethodName(semanticModel, invocationExpression, fullyQualifiedName, methodName, out methodSymbol))
             {
                 return;
             }
@@ -103,7 +103,7 @@ namespace AsyncUsageAnalyzers.Usage
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, parentMethodDeclaration.Identifier));
         }
 
-        private static bool GetMethodSymbolByFullyQualifiedNameAndMethodName(SemanticModel semanticModel, InvocationExpressionSyntax invocationExpression, string fullyQualifiedName, string methodName, out IMethodSymbol methodSymbol)
+        private static bool GetMethodSymbolByFullyQualifiedTypeNameAndMethodName(SemanticModel semanticModel, InvocationExpressionSyntax invocationExpression, string fullyQualifiedName, string methodName, out IMethodSymbol methodSymbol)
         {
             methodSymbol = semanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
             if (methodSymbol == null)
