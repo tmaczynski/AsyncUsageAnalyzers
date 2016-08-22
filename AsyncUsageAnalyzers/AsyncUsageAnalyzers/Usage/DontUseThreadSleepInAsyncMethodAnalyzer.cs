@@ -93,19 +93,19 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            if (methodSymbol.Name == "Sleep")
-            {
-                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
-            }
-            
-
-            /*
-            if (!HasAsyncMethodModifier(methodDeclaration))
+            if (methodSymbol.Name != "Sleep")
             {
                 return;
             }
-            */
-            
+
+            var parentMethodDeclaration = invocationExpression.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+            if (!HasAsyncMethodModifier(parentMethodDeclaration))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
+
             //
 
             //var invocationsWithinTheMethod = context.Node.DescendantNodes()
