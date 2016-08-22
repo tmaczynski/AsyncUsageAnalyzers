@@ -26,17 +26,17 @@ namespace AsyncUsageAnalyzers.Usage
         public const string DiagnosticId = "DontUseThreadSleep";
 
         private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepTitle),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepMessageFormat),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string Category = "AsyncUsage.CSharp.Usage";
 
         private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepDescription),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string HelpLink =
