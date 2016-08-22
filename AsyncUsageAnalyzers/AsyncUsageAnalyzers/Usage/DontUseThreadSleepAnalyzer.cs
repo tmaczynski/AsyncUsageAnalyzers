@@ -18,10 +18,10 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using System.Collections.Immutable;
 
-    public class DontUseThreadSleep : DiagnosticAnalyzer
+    public class DontUseThreadSleepAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// The ID for diagnostics produced by the <see cref="DontUseThreadSleep"/> analyzer.
+        /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepAnalyzer"/> analyzer.
         /// </summary>
         public const string DiagnosticId = "DontUseThreadSleep";
 

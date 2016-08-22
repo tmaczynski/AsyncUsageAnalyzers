@@ -80,15 +80,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Usage\DontUseThreadSleep.cs" />
+    <Compile Include="Usage\DontUseThreadSleepAnalyzer.cs" />
     <Compile Include="Usage\DontUseThreadSleepInAsyncCodeAnalyzer.cs" />
     <Compile Include="Usage\IncludeCancellationParameterAnalyzer.cs" />
+    <Compile Include="Usage\UseConfigureAwaitAnalyzer.cs" />
     <Compile Include="Usage\UsageResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UsageResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Usage\UseConfigureAwaitAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Helpers\HelpersResources.resx">
@@ -110,6 +110,7 @@
     <EmbeddedResource Include="Usage\UsageResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UsageResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
