@@ -81,19 +81,12 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
-            if (methodSymbol == null)
-            {
-                return;
-            }
+            var semanticModel = context.SemanticModel;
+            var fullyQualifiedName = "System.Threading.Thread";
+            var methodName = "Sleep";
 
-            var threadTypeMetadata = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Threading.Thread");
-            if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
-            {
-                return;
-            }
-
-            if (methodSymbol.Name != "Sleep")
+            IMethodSymbol methodSymbol;
+            if (!GetMethodSymbolByFullyQualifiedNameAndMethodName(semanticModel, invocationExpression, fullyQualifiedName, methodName, out methodSymbol))
             {
                 return;
             }
@@ -108,6 +101,28 @@ namespace AsyncUsageAnalyzers.Usage
             }
 
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, parentMethodDeclaration.Identifier));
+        }
+
+        private static bool GetMethodSymbolByFullyQualifiedNameAndMethodName(SemanticModel semanticModel, InvocationExpressionSyntax invocationExpression, string fullyQualifiedName, string methodName, out IMethodSymbol methodSymbol)
+        {
+            methodSymbol = semanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
+            if (methodSymbol == null)
+            {
+                return false;
+            }
+
+            var threadTypeMetadata = semanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedName);
+            if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
+            {
+                return false;
+            }
+
+            if (methodSymbol.Name != methodName)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
