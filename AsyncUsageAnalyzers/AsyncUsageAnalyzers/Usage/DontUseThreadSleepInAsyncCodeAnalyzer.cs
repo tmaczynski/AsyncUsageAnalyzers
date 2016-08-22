@@ -86,7 +86,7 @@ namespace AsyncUsageAnalyzers.Usage
             var methodName = "Sleep";
 
             IMethodSymbol methodSymbol;
-            if (!GetMethodSymbolByFullyQualifiedTypeNameAndMethodName(semanticModel, invocationExpression, fullyQualifiedName, methodName, out methodSymbol))
+            if (!invocationExpression.TryGetMethodSymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, methodName, out methodSymbol))
             {
                 return;
             }
@@ -101,28 +101,6 @@ namespace AsyncUsageAnalyzers.Usage
             }
 
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, parentMethodDeclaration.Identifier));
-        }
-
-        private static bool GetMethodSymbolByFullyQualifiedTypeNameAndMethodName(SemanticModel semanticModel, InvocationExpressionSyntax invocationExpression, string fullyQualifiedName, string methodName, out IMethodSymbol methodSymbol)
-        {
-            methodSymbol = semanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
-            if (methodSymbol == null)
-            {
-                return false;
-            }
-
-            var threadTypeMetadata = semanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedName);
-            if (!threadTypeMetadata.Equals(methodSymbol.ReceiverType))
-            {
-                return false;
-            }
-
-            if (methodSymbol.Name != methodName)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
