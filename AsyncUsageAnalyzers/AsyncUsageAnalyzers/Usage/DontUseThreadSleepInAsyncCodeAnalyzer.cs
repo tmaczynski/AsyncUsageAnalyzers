@@ -25,25 +25,25 @@ namespace AsyncUsageAnalyzers.Usage
     /// This analyzer reports a diagnostic if Thread.Sleep() method is called inside async method.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    internal class DontUseThreadSleepInAsyncMethodAnalyzer : DiagnosticAnalyzer
+    internal class DontUseThreadSleepInAsyncCodeAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncMethodAnalyzer"/> analyzer.
+        /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncCodeAnalyzer"/> analyzer.
         /// </summary>
         public const string DiagnosticId = "DontUseThreadSleepInAsyncMethod";
 
         private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncMethodTitle),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncMethodMessageFormat),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string Category = "AsyncUsage.CSharp.Usage";
 
         private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncMethodDescription),
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription),
                 UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string HelpLink =

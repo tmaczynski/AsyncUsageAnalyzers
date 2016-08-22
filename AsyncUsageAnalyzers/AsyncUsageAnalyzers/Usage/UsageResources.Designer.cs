@@ -64,27 +64,27 @@ namespace AsyncUsageAnalyzers.Usage {
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In a sync method..
         /// </summary>
-        internal static string DontUseThreadSleepInAsyncMethodDescription {
+        internal static string DontUseThreadSleepInAsyncCodeDescription {
             get {
-                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodDescription", resourceCulture);
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncCodeDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The asynchronus method &apos;{0}&apos; should not call Thread.Sleep().
         /// </summary>
-        internal static string DontUseThreadSleepInAsyncMethodMessageFormat {
+        internal static string DontUseThreadSleepInAsyncCodeMessageFormat {
             get {
-                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodMessageFormat", resourceCulture);
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncCodeMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() In Async Method.
         /// </summary>
-        internal static string DontUseThreadSleepInAsyncMethodTitle {
+        internal static string DontUseThreadSleepInAsyncCodeTitle {
             get {
-                return ResourceManager.GetString("DontUseThreadSleepInAsyncMethodTitle", resourceCulture);
+                return ResourceManager.GetString("DontUseThreadSleepInAsyncCodeTitle", resourceCulture);
             }
         }
         
