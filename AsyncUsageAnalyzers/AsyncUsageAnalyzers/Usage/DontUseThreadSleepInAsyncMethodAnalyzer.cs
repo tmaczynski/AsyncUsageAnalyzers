@@ -99,39 +99,15 @@ namespace AsyncUsageAnalyzers.Usage
             }
 
             var parentMethodDeclaration = invocationExpression.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+
+            // TODO: add test for parentMethodDeclaration == null and coresponding test
+
             if (!HasAsyncMethodModifier(parentMethodDeclaration))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), "Method1Async" /* methodName, TODO: change it */));
-
-            //
-
-            //var invocationsWithinTheMethod = context.Node.DescendantNodes()
-            //    .OfType<InvocationExpressionSyntax>();
-
-            //// TODO: add check which uses threadTypeMetadata
-            //var invocationsOfThreadSleep = invocationsWithinTheMethod
-            //    .Where(invocation =>
-            //    {
-            //        var methodSymbol = context.SemanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
-
-            //        // TODO: simplify this
-            //        return methodSymbol != null
-            //               && methodSymbol.Name == "Sleep"
-            //               && methodSymbol.ContainingNamespace.Name == "Threading"
-            //               && methodSymbol.ContainingNamespace.ContainingNamespace.Name == "System"
-            //               && methodSymbol.ContainingNamespace.ContainingNamespace.ContainingNamespace == null;
-
-            //    })
-            //    .ToList();
-
-            //foreach (var invocation in invocationsOfThreadSleep)
-            //{
-            //    //var methodName = methodDeclaration.Identifier.Text;
-            //    context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocation.GetLocation(), string.Empty /* methodName */));
-            //}
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), parentMethodDeclaration.Identifier));
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
