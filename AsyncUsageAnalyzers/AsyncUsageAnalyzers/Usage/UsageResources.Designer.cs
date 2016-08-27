@@ -62,6 +62,15 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to anonymous method.
+        /// </summary>
+        internal static string AnonymousMethod {
+            get {
+                return ResourceManager.GetString("AnonymousMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t use Thread.Sleep() .
         /// </summary>
         internal static string DontUseThreadSleepDescription {
