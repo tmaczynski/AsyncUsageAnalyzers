@@ -90,7 +90,10 @@ namespace AsyncUsageAnalyzers.Usage
 
             var parentMethodDeclaration = invocationExpression.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
 
-            // TODO: add test for parentMethodDeclaration == null and coresponding test
+            if (parentMethodDeclaration == null)
+            {
+                return;
+            }
 
             if (!HasAsyncMethodModifier(parentMethodDeclaration))
             {
