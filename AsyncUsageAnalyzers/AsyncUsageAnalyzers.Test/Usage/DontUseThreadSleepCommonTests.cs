@@ -16,7 +16,10 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
+    internal enum Code { Any, Async }
+
+    internal abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
     {
+        internal abstract Code CodeToBeAnalyzed { get; }
     }
 }
