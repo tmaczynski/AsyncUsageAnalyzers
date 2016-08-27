@@ -16,132 +16,31 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public class DontUseThreadSleepTests : DiagnosticVerifier
+    public class DontUseThreadSleepTests : DontUseThreadSleepCommonTests
     {
-        [Fact]
-        public async Task TestThreadSleepInAsyncMethodAsync()
-        {
-            string testCode = @"
-using System.Threading;
-using System.Threading.Tasks;
-
-class ClassA
-{
-    public async Task<int> Method1Async()
-    {
-        Thread.Sleep(1000);
-        System.Threading.Thread.Sleep(1000);
-        global::System.Threading.Thread.Sleep(1000);
-        
-        return await Task.FromResult(0); 
-    }
-}";
-
-            var expected = new[]
+        public override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(9, 9),
                 this.CSharpDiagnostic().WithLocation(10, 9),
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
-        }
 
-
-        [Fact]
-        public async Task TestThreadSleepInAsyncLambdaAsync()
-        {
-            string testCode = @"
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-class ClassA
-{
-    public void BadExample()
-    {
-        Func<Task> testFunc = async () =>
-        {
-            Thread.Sleep(1);
-            await Task.FromResult(1);
-        };
-    }
-}";
-            var expected = new[]
-{
+        public override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
+            {
                 this.CSharpDiagnostic().WithLocation(12, 13),
             };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
-        }
 
-        [Fact]
-        public async Task TestThreadSleepStaticImportInAsyncMethodAsync()
-        {
-            string testCode = @"
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Threading.Thread;
-
-class ClassA
-{
-    public async Task<int> Method1Async()
-    {
-        Sleep(1000);
-        
-        return await Task.FromResult(0); 
-    }
-}";
-
-            var expected = new[]
+        public override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(10, 9),
             };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
-        }
 
-        [Fact]
-        public async Task TestThreadSleepInNonAsyncMethodAsync()
-        {
-            string testCode = @"
-using System.Threading.Tasks;
-using System.Threading;
-
-class ClassA
-{
-    public void Method1Async()
-    {
-        Thread.Sleep(1000);
-        System.Threading.Thread.Sleep(1000);
-        global::System.Threading.Thread.Sleep(1000);
-    }
-}";
-            var expected = new[]
-{
+        public override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => new[]
+            {
                 this.CSharpDiagnostic().WithLocation(9, 9),
                 this.CSharpDiagnostic().WithLocation(10, 9),
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        [Fact]
-        public async Task TestTaskDelayInSimpleMethodAsync()
-        {
-            string testCode = @"
-using System.Threading.Tasks;
-using System.Threading;
-
-class ClassA
-{
-    public async Task<int> Method1Async()
-    {
-        await Task.Delay(1000);
-        return await Task.FromResult(0); 
-    }
-}";
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
-        }
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
