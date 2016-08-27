@@ -88,24 +88,38 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            var parentMethodDeclaration = invocationExpression.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
-
-            if (parentMethodDeclaration == null)
+            foreach (var syntaxNode in invocationExpression.Ancestors())
             {
-                return;
-            }
+                var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
+                if (methodDeclaration != null)
+                {
+                    if (HasAsyncMethodModifier(methodDeclaration))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, methodDeclaration.Identifier));
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
 
-            if (!HasAsyncMethodModifier(parentMethodDeclaration))
-            {
-                return;
+                // this handles also AnonymousMethodExpressionSyntax since it inherits from AnonymousMethodExpressionSyntax
+                var anonymousFunctionDeclaration = syntaxNode as AnonymousFunctionExpressionSyntax;
+                if (anonymousFunctionDeclaration != null)
+                {
+                    var x = 0;
+                }
             }
-
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, parentMethodDeclaration.Identifier));
         }
 
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
         {
             return methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
+        }
+
+        private static bool HasAsyncAnonymousFunctionModifier(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax)
+        {
+            return anonymousFunctionExpressionSyntax.AsyncKeyword != null;
         }
     }
 }

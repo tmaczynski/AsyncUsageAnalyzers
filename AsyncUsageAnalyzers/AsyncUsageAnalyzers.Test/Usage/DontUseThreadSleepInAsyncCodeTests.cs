@@ -38,6 +38,8 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithArguments(UsageResources.AnonymousMethod, string.Empty /* TODO: change it */).WithLocation(11, 9)
             };
 
+        public override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult => EmptyDiagnosticResults;
+
         public override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
             new[]
             {
