@@ -113,7 +113,7 @@ class ClassA
         }
 
         [Fact]
-        public async Task TestTaskDelayInSimpleMethodAsync()
+        public async Task TestUsingTaskDelayInSimpleAsynMethodIsOKAsync()
         {
             string testCode = @"
 using System.Threading.Tasks;
