@@ -16,8 +16,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public enum AnalyzedCode { Any, Async }
-
     public abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
     {
         public abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
