@@ -90,6 +90,27 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
+        public abstract DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult { get; }
+
+        [Fact]
+        public async Task TestThreadSleepInAnonymousMethodAsync()
+        {
+            string testCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public delegate void SampleDelegate();
+    SampleDelegate AnonymousMethod1 = delegate ()
+    {
+        Thread.Sleep(0);
+    };
+}";
+
+        }
+
         public abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
 
         [Fact]
@@ -134,8 +155,6 @@ class ClassA
 
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInNonAsyncMethod, CancellationToken.None).ConfigureAwait(false);
         }
-
-
 
         [Fact]
         public async Task TestUsingTaskDelayInSimpleAsynMethodIsOKAsync()
