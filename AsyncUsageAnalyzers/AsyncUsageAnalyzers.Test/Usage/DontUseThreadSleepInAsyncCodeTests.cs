@@ -67,7 +67,7 @@ class ClassA
     }
 }";
             var expected = new[]
-{
+            {
                 this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(12, 13),
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
