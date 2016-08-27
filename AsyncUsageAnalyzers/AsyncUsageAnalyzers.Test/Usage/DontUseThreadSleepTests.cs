@@ -30,6 +30,13 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithLocation(12, 13),
             };
 
+        public override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
+            new[]
+            {
+                this.CSharpDiagnostic().WithLocation(11, 9)
+            };
+
+        // TODO: update this
         public override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(10, 9),
