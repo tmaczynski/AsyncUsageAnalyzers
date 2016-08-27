@@ -109,6 +109,7 @@ class ClassA
     };
 }";
 
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
         public abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
