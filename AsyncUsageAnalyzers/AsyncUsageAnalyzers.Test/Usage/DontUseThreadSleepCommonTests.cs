@@ -20,6 +20,8 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
     {
+        public abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
+
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
         {
@@ -39,15 +41,10 @@ class ClassA
     }
 }";
 
-            var expected = new[]
-            {
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(9, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(11, 9)
-            };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
+        public abstract DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAsyncLambdaAsync()
@@ -68,12 +65,11 @@ class ClassA
         };
     }
 }";
-            var expected = new[]
-            {
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(12, 13),
-            };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncLambdaExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
+
+        public abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepStaticImportInAsyncMethodAsync()
@@ -93,12 +89,10 @@ class ClassA
     }
 }";
 
-            var expected = new[]
-            {
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9),
-            };
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepStaticImportExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
+
+        public abstract DiagnosticResult[] TestThreadSleepInNonAsyncMethod { get; }
 
         [Fact]
         public async Task TestThreadSleepInNonAsyncMethodAsync()
@@ -117,7 +111,7 @@ class ClassA
     }
 }";
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInNonAsyncMethod, CancellationToken.None).ConfigureAwait(false);
         }
 
         [Fact]
@@ -138,7 +132,5 @@ class ClassA
 
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
-
-        internal abstract AnalyzedCode CodeToBeAnalyzed { get; }
     }
 }
