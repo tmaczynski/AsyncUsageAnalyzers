@@ -82,6 +82,11 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
+            ReportDiagnosticOnThreadSleepInvocation(context, invocationExpression);
+        }
+
+        private static void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        {
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation()));
         }
     }
