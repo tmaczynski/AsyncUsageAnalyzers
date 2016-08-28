@@ -103,18 +103,16 @@ namespace AsyncUsageAnalyzers.Usage
                     }
                 }
 
-                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousMethodExpressionSyntax
-                var anonymousFunctionDeclaration = syntaxNode as AnonymousFunctionExpressionSyntax;
-                if (anonymousFunctionDeclaration != null)
+                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
+                var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
+                if (anonymousFunction != null)
                 {
-                    if (anonymousFunctionDeclaration.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword)
+                    if (HasAsyncAnonymousFunctionModifier(anonymousFunction))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AnonymousMethod /* TODO: change the name of resource */, string.Empty /* TODO: change it  */));
                     }
                     else
                     {
-                        // SyntaxKind.None is expected a message is non-async.
-                        // If it's some unexpected SyntaxKind we also break, so that this analysis does not rise false positive results.
                         break;
                     }
                 }
@@ -128,7 +126,7 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static bool HasAsyncAnonymousFunctionModifier(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax)
         {
-            return anonymousFunctionExpressionSyntax.AsyncKeyword != null;
+            return anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
         }
     }
 }
