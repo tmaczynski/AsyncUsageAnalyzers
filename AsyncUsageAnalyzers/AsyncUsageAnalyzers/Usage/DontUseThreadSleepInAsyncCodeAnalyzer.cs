@@ -20,7 +20,7 @@ namespace AsyncUsageAnalyzers.Usage
 
     /// <summary>
     /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is inside async code
-    /// (ie. asynchronous methods, anonymous functions or anonymous methods).
+    /// (i.e. asynchronous methods, anonymous functions or anonymous methods).
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class DontUseThreadSleepInAsyncCodeAnalyzer : DiagnosticAnalyzer
@@ -96,7 +96,7 @@ namespace AsyncUsageAnalyzers.Usage
                 {
                     if (HasAsyncMethodModifier(methodDeclaration))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.Method, methodDeclaration.Identifier));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.MethodFormat, methodDeclaration.Identifier));
                     }
                     else
                     {
@@ -110,7 +110,7 @@ namespace AsyncUsageAnalyzers.Usage
                 {
                     if (HasAsyncAnonymousFunctionModifier(anonymousFunction))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AnonymousMethod /* TODO: change the name of resource */, string.Empty /* TODO: change it  */));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods /* TODO: change the name of resource */, string.Empty /* TODO: change it  */));
                     }
                     else
                     {

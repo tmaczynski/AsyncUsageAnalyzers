@@ -62,11 +62,11 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to anonymous method.
+        ///   Looks up a localized string similar to Asynchronous anonymous functions and methods.
         /// </summary>
-        internal static string AnonymousMethod {
+        internal static string AsyncAnonymousFunctionsAndMethods {
             get {
-                return ResourceManager.GetString("AnonymousMethod", resourceCulture);
+                return ResourceManager.GetString("AsyncAnonymousFunctionsAndMethods", resourceCulture);
             }
         }
         
@@ -89,7 +89,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The asynchronus {0} &apos;{1}&apos; should not call Thread.Sleep().
+        ///   Looks up a localized string similar to {0} should not call Thread.Sleep().
         /// </summary>
         internal static string DontUseThreadSleepInAsyncCodeMessageFormat {
             get {
@@ -161,11 +161,11 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to method.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos;.
         /// </summary>
-        internal static string Method {
+        internal static string MethodFormat {
             get {
-                return ResourceManager.GetString("Method", resourceCulture);
+                return ResourceManager.GetString("MethodFormat", resourceCulture);
             }
         }
         
