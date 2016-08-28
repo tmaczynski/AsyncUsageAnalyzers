@@ -18,37 +18,37 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class DontUseThreadSleepTests : DontUseThreadSleepCommonTests
     {
-        public override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult => new[]
+        protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(9, 9),
                 this.CSharpDiagnostic().WithLocation(10, 9),
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
+        protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(12, 13)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
 
         // TODO: update this
-        public override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
+        protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(10, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => new[]
+        protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => new[]
             {
                 this.CSharpDiagnostic().WithLocation(9, 9),
                 this.CSharpDiagnostic().WithLocation(10, 9),
