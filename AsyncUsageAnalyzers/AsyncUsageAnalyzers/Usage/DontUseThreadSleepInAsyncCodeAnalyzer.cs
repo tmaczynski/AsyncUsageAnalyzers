@@ -30,27 +30,23 @@ namespace AsyncUsageAnalyzers.Usage
         public const string DiagnosticId = "DontUseThreadSleepInAsyncCode";
 
         private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string Category = "AsyncUsage.CSharp.Usage";
 
         private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string HelpLink =
             "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleepInAsyncCode.md";
 
         private static readonly DiagnosticDescriptor Descriptor =
-            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning,
-                AnalyzerConstants.EnabledByDefault, Description, HelpLink);
+            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
-        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpessionAction = HandleMethodDeclaration;
+        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpressionAction = HandleMethodDeclaration;
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -63,8 +59,7 @@ namespace AsyncUsageAnalyzers.Usage
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(HandleInvocationExpessionAction, SyntaxKind.InvocationExpression);
-            // TODO: extend this analysis to async lambda expression and anonymous methods
+            context.RegisterSyntaxNodeAction(HandleInvocationExpressionAction, SyntaxKind.InvocationExpression);
         }
 
         private static void HandleMethodDeclaration(SyntaxNodeAnalysisContext context)
