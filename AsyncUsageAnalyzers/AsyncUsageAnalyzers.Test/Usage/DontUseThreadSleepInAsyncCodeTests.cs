@@ -32,6 +32,8 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithArguments(UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty).WithLocation(12, 13)
             };
 
+        protected override DiagnosticResult[] TestThreadSleepInLambdaExpectedResult => EmptyDiagnosticResults;
+
         protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
             {
