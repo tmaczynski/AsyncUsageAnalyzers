@@ -16,7 +16,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public class DontUseThreadSleepInAsyncCodeTests : DontUseThreadSleepCommonTests
+    public class DontUseThreadSleepInAsyncCodeTests : DontUseThreadSleepTestsBase
     {
         protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
             new[]
