@@ -108,7 +108,7 @@ namespace AsyncUsageAnalyzers.Usage
                 var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
                 if (anonymousFunction != null)
                 {
-                    if (HasAsyncAnonymousFunctionModifier(anonymousFunction))
+                    if (IsAsyncAnonymousFunction(anonymousFunction))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods /* TODO: change the name of resource */, string.Empty /* TODO: change it  */));
                     }
@@ -123,7 +123,7 @@ namespace AsyncUsageAnalyzers.Usage
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration) =>
             methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
 
-        private static bool HasAsyncAnonymousFunctionModifier(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
+        private static bool IsAsyncAnonymousFunction(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
             anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
     }
 }
