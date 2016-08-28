@@ -96,7 +96,7 @@ namespace AsyncUsageAnalyzers.Usage
                 {
                     if (HasAsyncMethodModifier(methodDeclaration))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.MethodFormat, methodDeclaration.Identifier));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), GetMethodText(methodDeclaration.Identifier.Text)));
                     }
                     else
                     {
@@ -110,7 +110,7 @@ namespace AsyncUsageAnalyzers.Usage
                 {
                     if (IsAsyncAnonymousFunction(anonymousFunction))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods /* TODO: change the name of resource */, string.Empty /* TODO: change it  */));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
                     }
                     else
                     {
@@ -125,5 +125,8 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static bool IsAsyncAnonymousFunction(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
             anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
+
+        private static string GetMethodText(string methodName) =>
+            string.Format(UsageResources.MethodFormat, methodName);
     }
 }

@@ -21,9 +21,9 @@ namespace AsyncUsageAnalyzers.Test.Usage
         protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(9, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(10, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(11, 9)
+                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(9, 9),
+                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9),
+                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
@@ -43,7 +43,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(10, 9)
+                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => EmptyDiagnosticResults;
