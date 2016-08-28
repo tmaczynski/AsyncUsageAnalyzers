@@ -83,6 +83,11 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
+            ReportIfInAsyncCode(context, invocationExpression);
+        }
+
+        private static void ReportIfInAsyncCode(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        {
             foreach (var syntaxNode in invocationExpression.Ancestors())
             {
                 var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
