@@ -119,14 +119,10 @@ namespace AsyncUsageAnalyzers.Usage
             }
         }
 
-        private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
-        {
-            return methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
-        }
+        private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration) =>
+            methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
 
-        private static bool HasAsyncAnonymousFunctionModifier(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax)
-        {
-            return anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
-        }
+        private static bool HasAsyncAnonymousFunctionModifier(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
+            anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
     }
 }
