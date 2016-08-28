@@ -48,7 +48,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithLocation(10, 9)
             };
 
-        protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => new[]
+        protected override DiagnosticResult[] TestThreadSleepInMethod => new[]
             {
                 this.CSharpDiagnostic().WithLocation(9, 9),
                 this.CSharpDiagnostic().WithLocation(10, 9),

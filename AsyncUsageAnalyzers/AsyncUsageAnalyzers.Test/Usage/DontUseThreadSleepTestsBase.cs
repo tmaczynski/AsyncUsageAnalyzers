@@ -135,10 +135,10 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepStaticImportExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        protected abstract DiagnosticResult[] TestThreadSleepInNonAsyncMethod { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInMethod { get; }
 
         [Fact]
-        public async Task TestThreadSleepInNonAsyncMethodAsync()
+        public async Task TestThreadSleepInMethodAsync()
         {
             string testCode = @"
 using System.Threading.Tasks;
@@ -154,7 +154,7 @@ class ClassA
     }
 }";
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInNonAsyncMethod, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInMethod, CancellationToken.None).ConfigureAwait(false);
         }
 
         [Fact]
