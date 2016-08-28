@@ -34,11 +34,11 @@ namespace AsyncUsageAnalyzers.Usage
             context.RegisterSyntaxNodeAction(analyzer.HandleInvocation, SyntaxKind.InvocationExpression);
         }
 
-        internal abstract AnalyzerBase GetAnalyzer();
+        protected abstract AnalyzerBase GetAnalyzer();
 
-        internal abstract class AnalyzerBase
+        protected abstract class AnalyzerBase
         {
-            internal abstract void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression);
+            protected abstract void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression);
 
             internal void HandleInvocation(SyntaxNodeAnalysisContext context)
             {
