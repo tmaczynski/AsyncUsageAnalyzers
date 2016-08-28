@@ -51,11 +51,11 @@ namespace AsyncUsageAnalyzers.Usage
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
 
-        internal override AnalyzerBase GetAnalyzer() => new Analyzer();
+        protected override AnalyzerBase GetAnalyzer() => new Analyzer();
 
         private sealed class Analyzer : DontUseThreadSleepAnalyzerBase.AnalyzerBase
         {
-            internal override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+            protected override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
             {
                 foreach (var syntaxNode in invocationExpression.Ancestors())
                 {
