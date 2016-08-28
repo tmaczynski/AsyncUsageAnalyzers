@@ -84,10 +84,10 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            ReportIfInAsyncCode(context, invocationExpression);
+            ReportDiagnosticOnThreadSleepInvocation(context, invocationExpression);
         }
 
-        private static void ReportIfInAsyncCode(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        private static void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
         {
             foreach (var syntaxNode in invocationExpression.Ancestors())
             {

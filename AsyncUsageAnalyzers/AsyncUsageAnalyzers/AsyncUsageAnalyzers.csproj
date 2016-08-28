@@ -81,6 +81,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Usage\DontUseThreadSleepAnalyzer.cs" />
+    <Compile Include="Usage\DontUseThreadSleepAnalyzerBase.cs" />
     <Compile Include="Usage\DontUseThreadSleepInAsyncCodeAnalyzer.cs" />
     <Compile Include="Usage\IncludeCancellationParameterAnalyzer.cs" />
     <Compile Include="Usage\UseConfigureAwaitAnalyzer.cs" />
