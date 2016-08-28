@@ -18,7 +18,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
     {
-        public abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
@@ -42,7 +42,7 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public abstract DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAsyncLambdaAsync()
@@ -67,7 +67,7 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncLambdaExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public abstract DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAsyncAnonymousMethodAsync()
@@ -90,7 +90,7 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public abstract DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAnonymousMethodAsync()
@@ -112,7 +112,7 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepStaticImportInAsyncMethodAsync()
@@ -135,7 +135,7 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepStaticImportExpectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        public abstract DiagnosticResult[] TestThreadSleepInNonAsyncMethod { get; }
+        protected abstract DiagnosticResult[] TestThreadSleepInNonAsyncMethod { get; }
 
         [Fact]
         public async Task TestThreadSleepInNonAsyncMethodAsync()

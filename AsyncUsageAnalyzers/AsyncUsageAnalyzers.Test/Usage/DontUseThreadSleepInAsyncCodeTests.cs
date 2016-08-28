@@ -18,7 +18,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class DontUseThreadSleepInAsyncCodeTests : DontUseThreadSleepCommonTests
     {
-        public override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(9, 9),
@@ -26,27 +26,27 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(11, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithArguments(UsageResources.AnonymousMethod, string.Empty).WithLocation(12, 13)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithArguments(UsageResources.AnonymousMethod, string.Empty /* TODO: change it */).WithLocation(11, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult => EmptyDiagnosticResults;
+        protected override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult => EmptyDiagnosticResults;
 
-        public override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
+        protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
             new[]
             {
                 this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9)
             };
 
-        public override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => EmptyDiagnosticResults;
+        protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => EmptyDiagnosticResults;
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
