@@ -26,25 +26,21 @@ namespace AsyncUsageAnalyzers.Usage
         public const string DiagnosticId = "DontUseThreadSleep";
 
         private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepTitle),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepTitle), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepMessageFormat),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepMessageFormat), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string Category = "AsyncUsage.CSharp.Usage";
 
         private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepDescription),
-                UsageResources.ResourceManager, typeof(UsageResources));
+            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepDescription), UsageResources.ResourceManager, typeof(UsageResources));
 
         private static readonly string HelpLink =
             "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleep.md";
 
         private static readonly DiagnosticDescriptor Descriptor =
-            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning,
-                AnalyzerConstants.EnabledByDefault, Description, HelpLink);
+            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
         private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpessionAction = HandleMethodDeclaration;
 
