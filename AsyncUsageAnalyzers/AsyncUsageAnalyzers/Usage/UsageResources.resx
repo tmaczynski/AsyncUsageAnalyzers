@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AnonymousMethod" xml:space="preserve">
-    <value>anonymous method</value>
+  <data name="AsyncAnonymousFunctionsAndMethods" xml:space="preserve">
+    <value>Asynchronous anonymous functions and methods</value>
   </data>
   <data name="DontUseThreadSleepDescription" xml:space="preserve">
     <value>Don't use Thread.Sleep() </value>
@@ -127,7 +127,7 @@
     <value>Don't use Thread.Sleep() in a aync code</value>
   </data>
   <data name="DontUseThreadSleepInAsyncCodeMessageFormat" xml:space="preserve">
-    <value>The asynchronus {0} '{1}' should not call Thread.Sleep()</value>
+    <value>{0} should not call Thread.Sleep()</value>
   </data>
   <data name="DontUseThreadSleepInAsyncCodeTitle" xml:space="preserve">
     <value>Don't use Thread.Sleep() In async code</value>
@@ -150,8 +150,8 @@
   <data name="LambdaFunction" xml:space="preserve">
     <value>lambda function</value>
   </data>
-  <data name="Method" xml:space="preserve">
-    <value>method</value>
+  <data name="MethodFormat" xml:space="preserve">
+    <value>Method '{0}'</value>
   </data>
   <data name="UseConfigureAwaitDescription" xml:space="preserve">
     <value>The continuation behavior for a Task should be configured by calling ConfigureAwait prior to awaiting the task.</value>

@@ -21,21 +21,21 @@ namespace AsyncUsageAnalyzers.Test.Usage
         protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(9, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9),
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(11, 9)
+                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(9, 9),
+                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(10, 9),
+                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(11, 9)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.AnonymousMethod, string.Empty).WithLocation(12, 13)
+                this.CSharpDiagnostic().WithArguments(UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty).WithLocation(12, 13)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.AnonymousMethod, string.Empty /* TODO: change it */).WithLocation(11, 9)
+                this.CSharpDiagnostic().WithArguments(UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty /* TODO: change it */).WithLocation(11, 9)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult => EmptyDiagnosticResults;
@@ -43,7 +43,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
             new[]
             {
-                this.CSharpDiagnostic().WithArguments(UsageResources.Method, "Method1Async").WithLocation(10, 9)
+                this.CSharpDiagnostic().WithArguments(UsageResources.MethodFormat, "Method1Async").WithLocation(10, 9)
             };
 
         protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => EmptyDiagnosticResults;
