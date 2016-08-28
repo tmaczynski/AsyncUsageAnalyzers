@@ -21,7 +21,7 @@ namespace AsyncUsageAnalyzers.Usage
     /// <summary>
     /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is called.
     /// </summary>
-    public class DontUseThreadSleepAnalyzer : DiagnosticAnalyzer
+    public class DontUseThreadSleepAnalyzer : DontUseThreadSleepAnalyzerBase
     {
         /// <summary>
         /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepAnalyzer"/> analyzer.
@@ -45,49 +45,18 @@ namespace AsyncUsageAnalyzers.Usage
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
-        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpessionAction = HandleMethodDeclaration;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
 
-        /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        internal override AnalyzerBase GetAnalyzer() => new Analyzer();
+
+        private sealed class Analyzer : DontUseThreadSleepAnalyzerBase.AnalyzerBase
         {
-            // Code below requires Microsoft.CodeAnalysis to be upgraded from version 1.0.0.0 to a version that supports that operations
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
-
-            context.RegisterSyntaxNodeAction(HandleInvocationExpessionAction, SyntaxKind.InvocationExpression);
-        }
-
-        private static void HandleMethodDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
-
-            // This check aims at increasing the performance.
-            // Thanks to it, getting a semantic model in not necessary in majority of cases
-            if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
+            internal override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
             {
-                return;
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation()));
             }
-
-            var semanticModel = context.SemanticModel;
-            var fullyQualifiedName = "System.Threading.Thread";
-            var methodName = "Sleep";
-
-            IMethodSymbol methodSymbol;
-            if (!invocationExpression.TryGetMethodSymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, methodName, out methodSymbol))
-            {
-                return;
-            }
-
-            ReportDiagnosticOnThreadSleepInvocation(context, invocationExpression);
-        }
-
-        private static void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
-        {
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation()));
         }
     }
 }

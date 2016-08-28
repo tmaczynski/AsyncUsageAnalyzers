@@ -23,7 +23,7 @@ namespace AsyncUsageAnalyzers.Usage
     /// (i.e. asynchronous methods, anonymous functions or anonymous methods).
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    internal class DontUseThreadSleepInAsyncCodeAnalyzer : DiagnosticAnalyzer
+    internal class DontUseThreadSleepInAsyncCodeAnalyzer : DontUseThreadSleepAnalyzerBase
     {
         /// <summary>
         /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncCodeAnalyzer"/> analyzer.
@@ -47,74 +47,43 @@ namespace AsyncUsageAnalyzers.Usage
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
-        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationExpressionAction = HandleMethodDeclaration;
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
 
-        /// <inheritdoc/>
-        public override void Initialize(AnalysisContext context)
+        internal override AnalyzerBase GetAnalyzer() => new Analyzer();
+
+        private sealed class Analyzer : DontUseThreadSleepAnalyzerBase.AnalyzerBase
         {
-            // Code below requires Microsoft.CodeAnalysis to be upgraded from version 1.0.0.0 to a version that supports that operations
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
-
-            context.RegisterSyntaxNodeAction(HandleInvocationExpressionAction, SyntaxKind.InvocationExpression);
-        }
-
-        private static void HandleMethodDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
-
-            // This check aims at increasing the performance.
-            // Thanks to it, getting a semantic model in not necessary in majority of cases
-            if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
+            internal override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
             {
-                return;
-            }
-
-            var semanticModel = context.SemanticModel;
-            var fullyQualifiedName = "System.Threading.Thread";
-            var methodName = "Sleep";
-
-            IMethodSymbol methodSymbol;
-            if (!invocationExpression.TryGetMethodSymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, methodName, out methodSymbol))
-            {
-                return;
-            }
-
-            ReportDiagnosticOnThreadSleepInvocation(context, invocationExpression);
-        }
-
-        private static void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
-        {
-            foreach (var syntaxNode in invocationExpression.Ancestors())
-            {
-                var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
-                if (methodDeclaration != null)
+                foreach (var syntaxNode in invocationExpression.Ancestors())
                 {
-                    if (HasAsyncMethodModifier(methodDeclaration))
+                    var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
+                    if (methodDeclaration != null)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), GetMethodText(methodDeclaration.Identifier.Text)));
+                        if (HasAsyncMethodModifier(methodDeclaration))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), GetMethodText(methodDeclaration.Identifier.Text)));
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
-                    else
-                    {
-                        return;
-                    }
-                }
 
-                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
-                var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
-                if (anonymousFunction != null)
-                {
-                    if (IsAsyncAnonymousFunction(anonymousFunction))
+                    // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
+                    var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
+                    if (anonymousFunction != null)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
-                    }
-                    else
-                    {
-                        break;
+                        if (IsAsyncAnonymousFunction(anonymousFunction))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }

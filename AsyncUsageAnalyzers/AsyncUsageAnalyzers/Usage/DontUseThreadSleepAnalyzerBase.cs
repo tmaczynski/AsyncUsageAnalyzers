@@ -23,5 +23,46 @@ namespace AsyncUsageAnalyzers.Usage
     /// </summary>
     public abstract class DontUseThreadSleepAnalyzerBase : DiagnosticAnalyzer
     {
+        /// <inheritdoc/>
+        public override void Initialize(AnalysisContext context)
+        {
+            // Code below requires Microsoft.CodeAnalysis to be upgraded from version 1.0.0.0 to a version that supports that operations
+            var analyzer = this.GetAnalyzer();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.EnableConcurrentExecution();
+
+            context.RegisterSyntaxNodeAction(analyzer.HandleInvocation, SyntaxKind.InvocationExpression);
+        }
+
+        internal abstract AnalyzerBase GetAnalyzer();
+
+        internal abstract class AnalyzerBase
+        {
+            internal abstract void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression);
+
+            internal void HandleInvocation(SyntaxNodeAnalysisContext context)
+            {
+                var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+                // This check aims at increasing the performance.
+                // Thanks to it, getting a semantic model in not necessary in majority of cases
+                if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
+                {
+                    return;
+                }
+
+                var semanticModel = context.SemanticModel;
+                var fullyQualifiedName = "System.Threading.Thread";
+                var methodName = "Sleep";
+
+                IMethodSymbol methodSymbol;
+                if (!invocationExpression.TryGetMethodSymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, methodName, out methodSymbol))
+                {
+                    return;
+                }
+
+                this.ReportDiagnosticOnThreadSleepInvocation(context, invocationExpression);
+            }
+         }
     }
 }
