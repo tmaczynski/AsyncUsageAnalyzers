@@ -21,6 +21,7 @@ namespace AsyncUsageAnalyzers.Usage
     /// <summary>
     /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is called.
     /// </summary>
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class DontUseThreadSleepAnalyzer : DontUseThreadSleepAnalyzerBase
     {
         /// <summary>
