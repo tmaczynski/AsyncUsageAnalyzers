@@ -46,7 +46,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9)
             };
 
-        protected override DiagnosticResult[] TestThreadSleepInNonAsyncMethod => EmptyDiagnosticResults;
+        protected override DiagnosticResult[] TestThreadSleepInMethod => EmptyDiagnosticResults;
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
