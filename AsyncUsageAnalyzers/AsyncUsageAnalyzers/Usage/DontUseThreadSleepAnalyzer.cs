@@ -18,6 +18,9 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using System.Collections.Immutable;
 
+    /// <summary>
+    /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is called.
+    /// </summary>
     public class DontUseThreadSleepAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
