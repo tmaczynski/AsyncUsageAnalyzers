@@ -25,7 +25,12 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
 
-        protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
+        protected override DiagnosticResult[] TestThreadSleepInLambdaExpectedResult => new[]
+            {
+                this.CSharpDiagnostic().WithLocation(12, 13)
+            };
+
+    protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(12, 13)
             };
