@@ -19,7 +19,8 @@ namespace AsyncUsageAnalyzers.Usage
     using System.Collections.Immutable;
 
     /// <summary>
-    /// This analyzer reports a diagnostic if Thread.Sleep() method is called inside async method.
+    /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is inside async code
+    /// (ie. asynchronous methods, anonymous functions or anonymous methods).
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class DontUseThreadSleepInAsyncCodeAnalyzer : DiagnosticAnalyzer
