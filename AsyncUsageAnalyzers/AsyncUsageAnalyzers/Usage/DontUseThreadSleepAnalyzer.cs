@@ -81,10 +81,5 @@ namespace AsyncUsageAnalyzers.Usage
 
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation()));
         }
-
-        private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration)
-        {
-            return methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
-        }
     }
 }
