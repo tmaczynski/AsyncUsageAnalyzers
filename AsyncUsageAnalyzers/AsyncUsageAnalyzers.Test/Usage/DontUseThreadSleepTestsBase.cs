@@ -16,7 +16,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public abstract class DontUseThreadSleepCommonTests : DiagnosticVerifier
+    public abstract class DontUseThreadSleepTestsBase : DiagnosticVerifier
     {
         protected abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
 
