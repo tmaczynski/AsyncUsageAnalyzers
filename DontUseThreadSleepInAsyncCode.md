@@ -27,7 +27,7 @@ The code is not optimal - the thread that is sleeping cannot execute any other t
 ## How to fix violations
 
 Use "await System.Threading.Tasks.Task.Delay(...)" instead. 
-If a sleep is interrupted by some other thread, use on of overloads of Task.Delay() method which takes a cancallation token.
+If a sleep is interrupted by some other thread, use overload of Task.Delay() which takes a cancallation token.
 
 ## How to suppress violations
 

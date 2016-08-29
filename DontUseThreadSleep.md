@@ -24,6 +24,7 @@ System.Threading.Thread.Sleep() method is called in the code.
 System.Threading.Thread.Sleep() method is called in the code. 
 If this method is in code which can executed asynchronously, the code is not optimal - the thread that is sleeping cannot execute any other task.
 Note that non-async method might be called from asynchronous code and in such circumstances the thread cannot execute other task.
+In such case, consider refactoring your code.
 There are cases when using Thread.Sleep() method is valid.
 
 ## How to fix violations
