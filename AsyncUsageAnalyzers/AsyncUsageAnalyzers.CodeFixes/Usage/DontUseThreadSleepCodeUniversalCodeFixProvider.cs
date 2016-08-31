@@ -20,10 +20,12 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Formatting;
 
-    internal abstract class DontUseThreadSleepCodeUniversalCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic /* TODO: check it */, Name = nameof(DontUseThreadSleepCodeUniversalCodeFixProvider))]
+    [Shared]
+    internal class DontUseThreadSleepCodeUniversalCodeFixProvider : CodeFixProvider
     {
         private static readonly ImmutableArray<string> FixableDiagnostics =
-                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId);
+                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId/*, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId*/);
 
         public override ImmutableArray<string> FixableDiagnosticIds => FixableDiagnostics;
 
@@ -48,38 +50,34 @@ namespace AsyncUsageAnalyzers.Usage
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             InvocationExpressionSyntax expression = (InvocationExpressionSyntax)root.FindNode(diagnostic.Location.SourceSpan);
 
-            var arguments = expression.ArgumentList.Arguments;
+            var arguments = expression.ArgumentList;
 
-            var newExpression = expression;
+            var newExpression = GenerateTaskDeleyExpression(arguments);
 
             SyntaxNode newRoot = root.ReplaceNode(expression, newExpression);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
         }
 
-        private static InvocationExpressionSyntax GenerateTaskDeleyExpression(
-            SeparatedSyntaxList<ArgumentSyntax> methodArgumentList) =>
-                    SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
+        private static ExpressionStatementSyntax GenerateTaskDeleyExpression(
+            ArgumentListSyntax methodArgumentList) =>
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AwaitExpression(
+                            SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("System"),
-                                        SyntaxFactory.IdentifierName("Threading")),
-                                    SyntaxFactory.IdentifierName("Tasks")),
-                                SyntaxFactory.IdentifierName("Task")),
-                            SyntaxFactory.IdentifierName("Delay")))
-                        .WithArgumentList(
-                            SyntaxFactory.ArgumentList(
-                                SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
-                                    SyntaxFactory.Argument(
-                                        SyntaxFactory.LiteralExpression(
-                                            SyntaxKind.NumericLiteralExpression,
-                                            SyntaxFactory.Literal(1 /* TODO: change it to methodArgumentList */))))));
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                SyntaxFactory.IdentifierName("System"),
+                                                SyntaxFactory.IdentifierName("Threading")),
+                                            SyntaxFactory.IdentifierName("Tasks")),
+                                        SyntaxFactory.IdentifierName("Task")),
+                                    SyntaxFactory.IdentifierName("Delay")))
+                                .WithArgumentList(methodArgumentList)));
 
     }
 }
