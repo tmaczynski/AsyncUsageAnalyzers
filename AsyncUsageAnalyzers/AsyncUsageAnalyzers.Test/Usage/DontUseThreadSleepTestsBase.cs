@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using Microsoft.CodeAnalysis.CodeFixes;
+
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
@@ -16,7 +18,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public abstract class DontUseThreadSleepTestsBase : DiagnosticVerifier
+    public abstract class DontUseThreadSleepTestsBase : CodeFixVerifier
     {
         protected abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
 
@@ -39,7 +41,24 @@ class ClassA
     }
 }";
 
+            string fixedCode = @"
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public async Task<int> Method1Async()
+    {
+        await System.Threading.Tasks.Task.Delay(1000);
+        await System.Threading.Tasks.Task.Delay(1000);
+        await System.Threading.Tasks.Task.Delay(1000);
+        
+        return await Task.FromResult(0); 
+    }
+}";
+
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
         protected abstract DiagnosticResult[] TestThreadSleepInLambdaExpectedResult { get; }
@@ -199,6 +218,11 @@ class ClassA
 }";
 
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        protected override CodeFixProvider GetCSharpCodeFixProvider()
+        {
+            return new DontUseThreadSleepCodeUniversalCodeFixProvider();
         }
     }
 }
