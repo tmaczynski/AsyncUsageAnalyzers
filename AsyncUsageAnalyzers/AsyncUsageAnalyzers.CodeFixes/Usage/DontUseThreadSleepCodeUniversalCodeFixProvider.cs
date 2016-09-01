@@ -29,7 +29,12 @@ namespace AsyncUsageAnalyzers.Usage
 
         public override ImmutableArray<string> FixableDiagnosticIds => FixableDiagnostics;
 
-        // TODO: consider overriding GetFixAllProvider();
+
+        /// <inheritdoc/>
+        public override FixAllProvider GetFixAllProvider()
+        {
+            return CustomFixAllProviders.BatchFixer;
+        }
 
         public override Task RegisterCodeFixesAsync(CodeFixContext context)
         {
