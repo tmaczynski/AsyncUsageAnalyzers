@@ -22,10 +22,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
         public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
             diagnostic.WithArguments(arguments);
 
-
-
-        protected override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult => EmptyDiagnosticResults;
-
         protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
             new[]
             {
@@ -42,6 +38,12 @@ using System.Threading.Tasks;
 
 class ClassA
 {
+    public delegate void SampleDelegate();
+    SampleDelegate AnonymousMethod1 = delegate ()
+    {
+        Thread.Sleep(0);
+    };
+
     public void BadExample()
     {
         Func<int,int> testFunc = (x) =>
