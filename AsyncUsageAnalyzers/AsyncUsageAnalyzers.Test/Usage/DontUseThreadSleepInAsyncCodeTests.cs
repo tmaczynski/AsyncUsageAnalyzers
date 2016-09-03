@@ -10,21 +10,14 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
 
     public class DontUseThreadSleepInAsyncCodeTests : DontUseThreadSleepTestsBase
     {
-        protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult =>
-            new[]
-            {
-                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(9, 9),
-                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9),
-                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9)
-            };
+        public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
+            diagnostic.WithArguments(arguments);
 
         protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
             new[]
