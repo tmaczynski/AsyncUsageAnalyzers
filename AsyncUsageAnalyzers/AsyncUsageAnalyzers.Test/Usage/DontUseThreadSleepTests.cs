@@ -31,18 +31,15 @@ using System.Threading.Tasks;
 
 class ClassA
 {
-    public void BadExample()
+    Func<int,int> testFunc = (x) =>
     {
-        Func<int,int> testFunc = (x) =>
-        {
-            Thread.Sleep(0);
-            return x;
-        };
-    }
+        Thread.Sleep(0);
+        return x;
+    };
 }";
             var expectedResult = new[]
             {
-                this.CSharpDiagnostic().WithLocation(12, 13)
+                this.CSharpDiagnostic().WithLocation(10, 9)
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedResult, CancellationToken.None).ConfigureAwait(false);
@@ -59,7 +56,7 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate void SampleDelegate();
-    SampleDelegate AnonymousMethod1 = delegate ()
+    SampleDelegate AnonymousMethod = delegate ()
     {
         Thread.Sleep(0);
     };
@@ -89,7 +86,6 @@ class ClassA
         global::System.Threading.Thread.Sleep(1000);
     }
 }";
-
             var expected = new[]
             {
                 this.CSharpDiagnostic().WithLocation(9, 9),
