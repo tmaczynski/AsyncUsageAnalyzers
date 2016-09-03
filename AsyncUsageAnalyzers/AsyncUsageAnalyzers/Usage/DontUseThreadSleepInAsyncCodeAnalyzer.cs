@@ -24,23 +24,12 @@ namespace AsyncUsageAnalyzers.Usage
         /// The ID for diagnostics produced by the <see cref="DontUseThreadSleepInAsyncCodeAnalyzer"/> analyzer.
         /// </summary>
         public const string DiagnosticId = "DontUseThreadSleepInAsyncCode";
-
-        private static readonly LocalizableString Title =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle), UsageResources.ResourceManager, typeof(UsageResources));
-
-        private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat), UsageResources.ResourceManager, typeof(UsageResources));
-
+        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeTitle), UsageResources.ResourceManager, typeof(UsageResources));
+        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeMessageFormat), UsageResources.ResourceManager, typeof(UsageResources));
         private static readonly string Category = "AsyncUsage.CSharp.Usage";
-
-        private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription), UsageResources.ResourceManager, typeof(UsageResources));
-
-        private static readonly string HelpLink =
-            "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleepInAsyncCode.md";
-
-        private static readonly DiagnosticDescriptor Descriptor =
-            new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
+        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(UsageResources.DontUseThreadSleepInAsyncCodeDescription), UsageResources.ResourceManager, typeof(UsageResources));
+        private static readonly string HelpLink = "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/DontUseThreadSleepInAsyncCode.md";
+        private static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
