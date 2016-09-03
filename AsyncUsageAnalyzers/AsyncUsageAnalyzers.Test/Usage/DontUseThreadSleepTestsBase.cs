@@ -3,8 +3,6 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using Microsoft.CodeAnalysis.CodeFixes;
-
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
@@ -14,6 +12,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
