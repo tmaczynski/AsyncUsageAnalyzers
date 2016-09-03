@@ -64,7 +64,7 @@ namespace AsyncUsageAnalyzers.Usage
 
             var newExpression = GenerateTaskDelayExpression(arguments);
 
-            SyntaxNode newRoot = root.ReplaceNode(expression, newExpression.WithTriviaFrom(firstNodeWithCorrectSpan));
+            SyntaxNode newRoot = root.ReplaceNode(expression, newExpression.WithTriviaFrom(expression));
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
         }
