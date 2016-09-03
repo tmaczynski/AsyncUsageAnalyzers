@@ -57,35 +57,44 @@ namespace AsyncUsageAnalyzers.Usage
         {
             protected override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
             {
+                SyntaxNode asycNode = null;
+                if (IsInsideAsyncCode(invocationExpression, ref asycNode))
+                {
+                    var asyncMethod = asycNode as MethodDeclarationSyntax;
+                    if (asyncMethod != null)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), GetMethodText(asyncMethod.Identifier.Text)));
+                    }
+
+                    var asyncFunction = asycNode as AnonymousFunctionExpressionSyntax;
+                    if (asyncFunction != null)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
+                    }
+                }
+            }
+
+            private static bool IsInsideAsyncCode(InvocationExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
+            {
                 foreach (var syntaxNode in invocationExpression.Ancestors())
                 {
                     var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
                     if (methodDeclaration != null)
                     {
-                        if (HasAsyncMethodModifier(methodDeclaration))
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), GetMethodText(methodDeclaration.Identifier.Text)));
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        enclosingMethodOrFunctionDeclaration = syntaxNode;
+                        return HasAsyncMethodModifier(methodDeclaration);
                     }
 
                     // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
                     var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
                     if (anonymousFunction != null)
                     {
-                        if (IsAsyncAnonymousFunction(anonymousFunction))
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        enclosingMethodOrFunctionDeclaration = syntaxNode;
+                        return IsAsyncAnonymousFunction(anonymousFunction);
                     }
                 }
+
+                return false;
             }
         }
 
