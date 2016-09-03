@@ -48,6 +48,12 @@ namespace AsyncUsageAnalyzers.Usage
                     // TODO: 
                     var root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
                     var invocationExpression = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
+
+                    if (invocationExpression == null)
+                    {
+                        return;
+                    }
+
                     SyntaxNode methodOrFunctionNode = null;
                     if (invocationExpression.IsInsideAsyncCode(ref methodOrFunctionNode))
                     {
