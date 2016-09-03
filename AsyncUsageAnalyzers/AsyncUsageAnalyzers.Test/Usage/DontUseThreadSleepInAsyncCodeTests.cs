@@ -22,12 +22,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
         public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
             diagnostic.WithArguments(arguments);
 
-        protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult =>
-            new[]
-            {
-                this.CSharpDiagnostic().WithArguments(UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty).WithLocation(12, 13)
-            };
-
         protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
             {
