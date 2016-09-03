@@ -33,19 +33,16 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate void SampleDelegate();
-    SampleDelegate AnonymousMethod1 = delegate ()
+    SampleDelegate AnonymousMethod = delegate ()
     {
         Thread.Sleep(0);
     };
 
-    public void BadExample()
+    Func<int,int> testFunc = (x) =>
     {
-        Func<int,int> testFunc = (x) =>
-        {
-            Thread.Sleep(0);
-            return x;
-        };
-    }
+        Thread.Sleep(0);
+        return x;
+    };
 
     public void NonAsyncMethod()
     {
