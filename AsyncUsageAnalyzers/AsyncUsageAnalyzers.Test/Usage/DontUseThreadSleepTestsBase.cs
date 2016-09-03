@@ -5,10 +5,10 @@
 
 namespace AsyncUsageAnalyzers.Test.Usage
 {
-    using AsyncUsageAnalyzers.Usage;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using AsyncUsageAnalyzers.Usage;
     using Microsoft.CodeAnalysis.CodeFixes;
     using TestHelper;
     using Xunit;
