@@ -88,12 +88,6 @@ namespace AsyncUsageAnalyzers.Usage
                                     SyntaxFactory.IdentifierName("Tasks")),
                                 SyntaxFactory.IdentifierName("Task")),
                             SyntaxFactory.IdentifierName("Delay")))
-                        .WithArgumentList(
-                            SyntaxFactory.ArgumentList(
-                                SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
-                                    SyntaxFactory.Argument(
-                                        SyntaxFactory.LiteralExpression(
-                                            SyntaxKind.NumericLiteralExpression,
-                                            SyntaxFactory.Literal(1000)) /* methodArgumentList */)))));
+                        .WithArgumentList(methodArgumentList));
     }
 }
