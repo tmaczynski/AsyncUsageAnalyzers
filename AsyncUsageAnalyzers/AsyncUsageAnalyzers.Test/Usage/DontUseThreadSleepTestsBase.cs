@@ -24,7 +24,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         /// Return a new diagnostic using with updated arguments or leaves a diagnostic intact.
         /// </summary>
         /// <param name="diagnostic">a diagnostic to be modified</param>
-        /// <param name="arguments">arguments which can be used to update diagnostic/param>
+        /// <param name="arguments">arguments which can be used to update diagnostic</param>
         /// <returns>An appropriately modified diagnostic or unchanged diagnostic</returns>
         public abstract DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments);
 
