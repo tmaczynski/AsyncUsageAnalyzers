@@ -22,12 +22,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
         public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
             diagnostic.WithArguments(arguments);
 
-        protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult =>
-            new[]
-            {
-                this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9)
-            };
-
         [Fact]
         public async Task TestThreadSleepNonAsyncCodeAsync()
         {

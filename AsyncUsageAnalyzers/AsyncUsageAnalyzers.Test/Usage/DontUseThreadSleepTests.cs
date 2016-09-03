@@ -73,11 +73,6 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
         }
 
-        protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
-            {
-                this.CSharpDiagnostic().WithLocation(10, 9)
-            };
-
         [Fact]
         public async Task TestThreadSleepInMethodAsync()
         {
