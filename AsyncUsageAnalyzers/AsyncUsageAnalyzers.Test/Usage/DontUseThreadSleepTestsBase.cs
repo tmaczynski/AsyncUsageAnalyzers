@@ -159,7 +159,28 @@ class ClassA
     };
 }";
 
+            string fixedCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public delegate Task<int> SampleDelegate();
+    SampleDelegate AnonymousMethod1 = async delegate ()
+    {
+        await System.Threading.Tasks.Task.Delay(0);
+        return await Task.FromResult(0);
+    };
+}";
+
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(
+                    testCode,
+                    fixedCode,
+                    cancellationToken: CancellationToken.None,
+                    allowNewCompilerDiagnostics: true /* expected new diagnostic is "hidden CS8019: Unnecessary using directive." */)
+                .ConfigureAwait(false);
         }
 
         protected abstract DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult { get; }
