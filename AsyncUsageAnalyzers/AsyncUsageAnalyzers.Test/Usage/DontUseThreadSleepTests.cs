@@ -18,7 +18,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class DontUseThreadSleepTests : DontUseThreadSleepTestsBase
     {
-        public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
+        protected override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
             diagnostic;
 
         [Fact]
