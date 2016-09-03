@@ -52,12 +52,17 @@ class ClassA
             return x;
         };
     }
+
+    public void NonAsyncMethod()
+    {
+        Thread.Sleep(1000);
+        System.Threading.Thread.Sleep(1000);
+        global::System.Threading.Thread.Sleep(1000);
+    }
 }";
 
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
-
-        protected override DiagnosticResult[] TestThreadSleepInMethod => EmptyDiagnosticResults;
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {

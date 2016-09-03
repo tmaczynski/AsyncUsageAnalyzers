@@ -224,34 +224,6 @@ class ClassA
                 .ConfigureAwait(false);
         }
 
-        protected abstract DiagnosticResult[] TestThreadSleepInMethod { get; }
-
-        [Fact]
-        public async Task TestThreadSleepInMethodAsync()
-        {
-            string testCode = @"
-using System.Threading.Tasks;
-using System.Threading;
-
-class ClassA
-{
-    public void Method1Async()
-    {
-        Thread.Sleep(1000);
-        System.Threading.Thread.Sleep(1000);
-        global::System.Threading.Thread.Sleep(1000);
-    }
-}";
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInMethod, CancellationToken.None).ConfigureAwait(false);
-            await this.VerifyCSharpFixAsync(
-                    testCode,
-                    testCode /* source code should not be changed as there's no automatic code fix */,
-                    cancellationToken: CancellationToken.None,
-                    numberOfFixAllIterations: -this.TestThreadSleepInMethod.Length)
-                .ConfigureAwait(false);
-        }
-
         [Fact]
         public async Task TestUsingTaskDelayInSimpleAsynMethodIsOKAsync()
         {
