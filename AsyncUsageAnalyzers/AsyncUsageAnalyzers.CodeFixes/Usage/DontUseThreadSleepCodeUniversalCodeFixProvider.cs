@@ -52,21 +52,27 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static async Task<Document> GetTransformedDocumentAsync(Document document, Diagnostic diagnostic, CancellationToken cancellationToken)
         {
-            SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-            InvocationExpressionSyntax expression = (InvocationExpressionSyntax)root.FindNode(diagnostic.Location.SourceSpan);
+            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var firstNodeWithCorrectSpan = root
+                .FindNode(diagnostic.Location.SourceSpan);
+            InvocationExpressionSyntax expression = firstNodeWithCorrectSpan
+                .DescendantNodesAndSelf()
+                .OfType<InvocationExpressionSyntax>()
+                .First();
 
             var arguments = expression.ArgumentList;
 
-            var newExpression = GenerateTaskDeleyExpression(arguments);
+            var newExpression = GenerateTaskDelayExpression(arguments);
 
             SyntaxNode newRoot = root.ReplaceNode(expression, newExpression);
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
         }
 
-        private static ExpressionStatementSyntax GenerateTaskDeleyExpression(
+        private static AwaitExpressionSyntax GenerateTaskDelayExpression(
             ArgumentListSyntax methodArgumentList) =>
-                    SyntaxFactory.ExpressionStatement(
+
+                    // SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AwaitExpression(
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.MemberAccessExpression(
@@ -82,7 +88,15 @@ namespace AsyncUsageAnalyzers.Usage
                                             SyntaxFactory.IdentifierName("Tasks")),
                                         SyntaxFactory.IdentifierName("Task")),
                                     SyntaxFactory.IdentifierName("Delay")))
-                                .WithArgumentList(methodArgumentList)));
+                                .WithArgumentList(
+                                    SyntaxFactory.ArgumentList(
+                                        SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.LiteralExpression(
+                                                    SyntaxKind.NumericLiteralExpression,
+                                                    SyntaxFactory.Literal(1000)) /* methodArgumentList */)))))
+
+                        .NormalizeWhitespace();
 
     }
 }
