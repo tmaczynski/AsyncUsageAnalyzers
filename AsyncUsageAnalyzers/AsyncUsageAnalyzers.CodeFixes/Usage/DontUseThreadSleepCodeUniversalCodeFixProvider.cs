@@ -25,7 +25,7 @@ namespace AsyncUsageAnalyzers.Usage
     internal class DontUseThreadSleepCodeUniversalCodeFixProvider : CodeFixProvider
     {
         private static readonly ImmutableArray<string> FixableDiagnostics =
-                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId/*, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId*/);
+                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId /* TODO: adjust fix for this analysis */);
 
         public override ImmutableArray<string> FixableDiagnosticIds => FixableDiagnostics;
 
