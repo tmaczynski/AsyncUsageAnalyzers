@@ -122,7 +122,7 @@ class ClassA
 }";
             var expected = new[]
             {
-                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(12, 13), UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty)
+                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(12, 13), UsageResources.AsyncAnonymousFunctionsAndMethods)
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
@@ -170,7 +170,7 @@ class ClassA
             var result =
             new[]
             {
-                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(11, 9), UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty /* TODO: change it */)
+                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(11, 9), UsageResources.AsyncAnonymousFunctionsAndMethods)
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
