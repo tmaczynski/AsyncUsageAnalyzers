@@ -4,6 +4,7 @@
 /* Contributor: Tomasz Maczyński */
 
 using System.Linq;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AsyncUsageAnalyzers.Usage
 {
@@ -36,18 +37,37 @@ namespace AsyncUsageAnalyzers.Usage
             return CustomFixAllProviders.BatchFixer;
         }
 
-        public override Task RegisterCodeFixesAsync(CodeFixContext context)
+        public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             foreach (var diagnostic in context.Diagnostics)
             {
-                context.RegisterCodeFix(
-                    CodeAction.Create(
-                        "Code Fix for " /* ReadabilityResources.SA1139CodeFix*/,
-                        cancellationToken => GetTransformedDocumentAsync(context.Document, diagnostic, cancellationToken)),
-                    diagnostic);
-            }
+                if (diagnostic.Id == DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId)
+                {
+                    RegisterCodeFixForDiagnosic(context, diagnostic);
+                }
+                else if (diagnostic.Id == DontUseThreadSleepAnalyzer.DiagnosticId)
+                {
+                    var document = context.Document;
 
-            return SpecializedTasks.CompletedTask;
+                    // TODO: check it awaiting stuff here does not cause a major slowdown
+                    var root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
+                    var tokenWithDiagnostic = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
+                    SyntaxNode methodOrFunctionNode = null;
+                    if (DontUseThreadSleepInAsyncCodeAnalyzer.IsInsideAsyncCode(tokenWithDiagnostic, ref methodOrFunctionNode))
+                    {
+                        RegisterCodeFixForDiagnosic(context, diagnostic);
+                    }
+                }
+            }
+        }
+
+        private static void RegisterCodeFixForDiagnosic(CodeFixContext context, Diagnostic diagnostic)
+        {
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    "Code Fix for " /* ReadabilityResources.SA1139CodeFix*/,
+                    cancellationToken => GetTransformedDocumentAsync(context.Document, diagnostic, cancellationToken)),
+                diagnostic);
         }
 
         private static async Task<Document> GetTransformedDocumentAsync(Document document, Diagnostic diagnostic, CancellationToken cancellationToken)
