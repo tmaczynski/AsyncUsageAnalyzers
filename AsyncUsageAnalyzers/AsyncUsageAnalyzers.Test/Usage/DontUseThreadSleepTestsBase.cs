@@ -80,30 +80,7 @@ class ClassA
                 .ConfigureAwait(false);
         }
 
-        protected abstract DiagnosticResult[] TestThreadSleepInLambdaExpectedResult { get; }
 
-        [Fact]
-        public async Task TestThreadSleepInLambdaAsync()
-        {
-            string testCode = @"
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-class ClassA
-{
-    public void BadExample()
-    {
-        Func<int,int> testFunc = (x) =>
-        {
-            Thread.Sleep(0);
-            return x;
-        };
-    }
-}";
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInLambdaExpectedResult, CancellationToken.None).ConfigureAwait(false);
-        }
 
         protected abstract DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult { get; }
 

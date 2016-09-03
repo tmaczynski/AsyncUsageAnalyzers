@@ -21,12 +21,34 @@ namespace AsyncUsageAnalyzers.Test.Usage
         public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
             diagnostic;
 
-        protected override DiagnosticResult[] TestThreadSleepInLambdaExpectedResult => new[]
+        [Fact]
+        public async Task TestThreadSleepInLambdaAsync()
+        {
+            string testCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public void BadExample()
+    {
+        Func<int,int> testFunc = (x) =>
+        {
+            Thread.Sleep(0);
+            return x;
+        };
+    }
+}";
+            var expectedResult = new[]
             {
                 this.CSharpDiagnostic().WithLocation(12, 13)
             };
 
-    protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedResult, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        protected override DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(12, 13)
             };
