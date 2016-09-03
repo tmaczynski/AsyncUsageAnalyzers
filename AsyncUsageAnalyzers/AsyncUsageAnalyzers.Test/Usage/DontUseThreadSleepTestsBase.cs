@@ -34,14 +34,16 @@ namespace AsyncUsageAnalyzers.Test.Usage
             string testCode = @"
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Threading.Thread;
 
 class ClassA
 {
     public async Task<int> Method1Async()
     {
-        Thread.Sleep(1000);
-        System.Threading.Thread.Sleep(1000);
-        global::System.Threading.Thread.Sleep(1000);
+        Sleep(1);
+        Thread.Sleep(2);
+        System.Threading.Thread.Sleep(3);
+        global::System.Threading.Thread.Sleep(4);
         
         return await Task.FromResult(0); 
     }
@@ -50,23 +52,26 @@ class ClassA
             string fixedCode = @"
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Threading.Thread;
 
 class ClassA
 {
     public async Task<int> Method1Async()
     {
-        await System.Threading.Tasks.Task.Delay(1000);
-        await System.Threading.Tasks.Task.Delay(1000);
-        await System.Threading.Tasks.Task.Delay(1000);
+        await System.Threading.Tasks.Task.Delay(1);
+        await System.Threading.Tasks.Task.Delay(2);
+        await System.Threading.Tasks.Task.Delay(3);
+        await System.Threading.Tasks.Task.Delay(4);
         
         return await Task.FromResult(0); 
     }
 }";
             var expectedResults = new[]
                 {
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(9, 9),
                     this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9),
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9)
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9),
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(12, 9),
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(13, 9)
                 }
                 .Select(diag => this.OptionallyAddArgumentsToDiagnostic(diag, string.Format(UsageResources.MethodFormat, "Method1Async")))
                 .ToArray();
@@ -170,52 +175,6 @@ class ClassA
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
-            await this.VerifyCSharpFixAllFixAsync(
-                    testCode,
-                    fixedCode,
-                    cancellationToken: CancellationToken.None,
-                    allowNewCompilerDiagnostics: true /* expected new diagnostic is "hidden CS8019: Unnecessary using directive." */)
-                .ConfigureAwait(false);
-        }
-
-
-
-        protected abstract DiagnosticResult[] TestThreadSleepStaticImportExpectedResult { get; }
-
-        [Fact]
-        public async Task TestThreadSleepStaticImportInAsyncMethodAsync()
-        {
-            string testCode = @"
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Threading.Thread;
-
-class ClassA
-{
-    public async Task<int> Method1Async()
-    {
-        Sleep(1000);
-        
-        return await Task.FromResult(0); 
-    }
-}";
-
-            string fixedCode = @"
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Threading.Thread;
-
-class ClassA
-{
-    public async Task<int> Method1Async()
-    {
-        await System.Threading.Tasks.Task.Delay(1000);
-        
-        return await Task.FromResult(0); 
-    }
-}";
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepStaticImportExpectedResult, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     fixedCode,
