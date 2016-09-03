@@ -38,16 +38,16 @@ namespace AsyncUsageAnalyzers.Usage
             {
                 var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
-                // This check aims at increasing the performance.
-                // Thanks to it, getting a semantic model in not necessary in majority of cases.
-                if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
-                {
-                    return;
-                }
-
                 var semanticModel = context.SemanticModel;
                 var fullyQualifiedName = "System.Threading.Thread";
                 var methodName = "Sleep";
+
+                // This check aims at increasing the performance.
+                // Thanks to it, getting a semantic model in not necessary in majority of cases.
+                if (!invocationExpression.Expression.GetText().ToString().Contains(methodName))
+                {
+                    return;
+                }
 
                 IMethodSymbol methodSymbol;
                 if (!invocationExpression.TryGetMethodSymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, methodName, out methodSymbol))
