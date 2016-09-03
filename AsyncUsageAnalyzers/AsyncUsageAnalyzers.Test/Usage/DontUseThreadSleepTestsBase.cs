@@ -80,10 +80,6 @@ class ClassA
                 .ConfigureAwait(false);
         }
 
-
-
-        protected abstract DiagnosticResult[] TestThreadSleepInAsyncLambdaExpectedResult { get; }
-
         [Fact]
         public async Task TestThreadSleepInAsyncLambdaAsync()
         {
@@ -120,8 +116,12 @@ class ClassA
         };
     }
 }";
+            var expected = new[]
+            {
+                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(12, 13), UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty)
+            };
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncLambdaExpectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     fixedCode,
@@ -129,8 +129,6 @@ class ClassA
                     allowNewCompilerDiagnostics: true /* expected new diagnostic is "hidden CS8019: Unnecessary using directive." */)
                 .ConfigureAwait(false);
         }
-
-        protected abstract DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult { get; }
 
         [Fact]
         public async Task TestThreadSleepInAsyncAnonymousMethodAsync()
@@ -165,7 +163,13 @@ class ClassA
     };
 }";
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncAnonymousMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
+            var result =
+            new[]
+            {
+                this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(11, 9), UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty /* TODO: change it */)
+            };
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     fixedCode,
