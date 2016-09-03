@@ -6,10 +6,7 @@
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -24,7 +21,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         [Fact]
         public async Task TestThreadSleepInLambdaAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +45,7 @@ class ClassA
         [Fact]
         public async Task TestThreadSleepInAnonymousMethodAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,7 +70,7 @@ class ClassA
         [Fact]
         public async Task TestThreadSleepInMethodAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System.Threading.Tasks;
 using System.Threading;
 

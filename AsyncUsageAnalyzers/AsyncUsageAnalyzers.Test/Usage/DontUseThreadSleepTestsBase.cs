@@ -6,14 +6,10 @@
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
 
@@ -30,7 +26,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Threading.Thread;
@@ -47,8 +43,7 @@ class ClassA
         return await Task.FromResult(0); 
     }
 }";
-
-            string fixedCode = @"
+            var fixedCode = @"
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Threading.Thread;
@@ -87,7 +82,7 @@ class ClassA
         [Fact]
         public async Task TestThreadSleepInAsyncAnonymousFunctionAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,7 +99,7 @@ class ClassA
     }
 }";
 
-            string fixedCode = @"
+            var fixedCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -137,7 +132,7 @@ class ClassA
         [Fact]
         public async Task TestThreadSleepInAsyncAnonymousMethodAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -151,8 +146,7 @@ class ClassA
         return await Task.FromResult(0);
     };
 }";
-
-            string fixedCode = @"
+            var fixedCode = @"
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,9 +160,7 @@ class ClassA
         return await Task.FromResult(0);
     };
 }";
-
-            var result =
-            new[]
+            var result = new[]
             {
                 this.OptionallyAddArgumentsToDiagnostic(this.CSharpDiagnostic().WithLocation(11, 9), UsageResources.AsyncAnonymousFunctionsAndMethods)
             };
@@ -185,7 +177,7 @@ class ClassA
         [Fact]
         public async Task TestUsingTaskDelayIsOKAsync()
         {
-            string testCode = @"
+            var testCode = @"
 using System.Threading.Tasks;
 using System.Threading;
 

@@ -8,10 +8,7 @@ using System.Threading;
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
