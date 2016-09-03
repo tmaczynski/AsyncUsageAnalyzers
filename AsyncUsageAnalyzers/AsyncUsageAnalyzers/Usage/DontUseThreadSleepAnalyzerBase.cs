@@ -5,7 +5,6 @@
 
 namespace AsyncUsageAnalyzers.Usage
 {
-    using System.Linq;
     using AsyncUsageAnalyzers.Helpers;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
