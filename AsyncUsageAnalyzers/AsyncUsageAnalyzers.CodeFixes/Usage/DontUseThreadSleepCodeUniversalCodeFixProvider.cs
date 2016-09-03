@@ -3,14 +3,11 @@
 
 /* Contributor: Tomasz Maczyński */
 
-using System.Linq;
-using Microsoft.CodeAnalysis.Text;
-
 namespace AsyncUsageAnalyzers.Usage
 {
-    using System;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Helpers;
@@ -19,17 +16,16 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Formatting;
+    using Microsoft.CodeAnalysis.Text;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic /* TODO: check it */, Name = nameof(DontUseThreadSleepCodeUniversalCodeFixProvider))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = nameof(DontUseThreadSleepCodeUniversalCodeFixProvider))]
     [Shared]
     internal class DontUseThreadSleepCodeUniversalCodeFixProvider : CodeFixProvider
     {
         private static readonly ImmutableArray<string> FixableDiagnostics =
-                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId /* TODO: adjust fix for this analysis */);
+                ImmutableArray.Create(DontUseThreadSleepAnalyzer.DiagnosticId, DontUseThreadSleepInAsyncCodeAnalyzer.DiagnosticId);
 
         public override ImmutableArray<string> FixableDiagnosticIds => FixableDiagnostics;
-
 
         /// <inheritdoc/>
         public override FixAllProvider GetFixAllProvider()
@@ -49,7 +45,7 @@ namespace AsyncUsageAnalyzers.Usage
                 {
                     var document = context.Document;
 
-                    // TODO: check it awaiting stuff here does not cause a major slowdown
+                    // TODO: 
                     var root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
                     var invocationExpression = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
                     SyntaxNode methodOrFunctionNode = null;
