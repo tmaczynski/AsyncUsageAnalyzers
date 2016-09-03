@@ -18,12 +18,8 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class DontUseThreadSleepTests : DontUseThreadSleepTestsBase
     {
-        protected override DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult => new[]
-            {
-                this.CSharpDiagnostic().WithLocation(9, 9),
-                this.CSharpDiagnostic().WithLocation(10, 9),
-                this.CSharpDiagnostic().WithLocation(11, 9)
-            };
+        public override DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments) =>
+            diagnostic;
 
         protected override DiagnosticResult[] TestThreadSleepInLambdaExpectedResult => new[]
             {
@@ -47,7 +43,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
                 this.CSharpDiagnostic().WithLocation(11, 9)
             };
 
-        // TODO: update this
         protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
             {
                 this.CSharpDiagnostic().WithLocation(10, 9)

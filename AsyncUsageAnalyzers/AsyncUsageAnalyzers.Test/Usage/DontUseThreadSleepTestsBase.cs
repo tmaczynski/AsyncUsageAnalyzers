@@ -20,7 +20,13 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public abstract class DontUseThreadSleepTestsBase : CodeFixVerifier
     {
-        protected abstract DiagnosticResult[] TestThreadSleepInAsyncMethodExpectedResult { get; }
+        /// <summary>
+        /// Return a new diagnostic using with updated arguments or leaves a diagnostic intact.
+        /// </summary>
+        /// <param name="diagnostic">a diagnostic to be modified</param>
+        /// <param name="arguments">arguments which can be used to update diagnostic/param>
+        /// <returns></returns>
+        public abstract DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments);
 
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
@@ -56,8 +62,16 @@ class ClassA
         return await Task.FromResult(0); 
     }
 }";
+            var expectedResults = new[]
+                {
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(9, 9),
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9),
+                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9)
+                }
+                .Select(diag => this.OptionallyAddArgumentsToDiagnostic(diag, string.Format(UsageResources.MethodFormat, "Method1Async")))
+                .ToArray();
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, expectedResults, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     fixedCode,
