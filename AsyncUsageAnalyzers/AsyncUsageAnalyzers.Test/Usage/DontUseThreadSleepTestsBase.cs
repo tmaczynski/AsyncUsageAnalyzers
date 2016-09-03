@@ -67,10 +67,10 @@ class ClassA
 }";
             var expectedResults = new[]
                 {
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9),
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(11, 9),
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(12, 9),
-                    this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(13, 9)
+                    this.CSharpDiagnostic().WithLocation(10, 9),
+                    this.CSharpDiagnostic().WithLocation(11, 9),
+                    this.CSharpDiagnostic().WithLocation(12, 9),
+                    this.CSharpDiagnostic().WithLocation(13, 9)
                 }
                 .Select(diag => this.OptionallyAddArgumentsToDiagnostic(diag, string.Format(UsageResources.MethodFormat, "Method1Async")))
                 .ToArray();
@@ -183,7 +183,7 @@ class ClassA
         }
 
         [Fact]
-        public async Task TestUsingTaskDelayInSimpleAsynMethodIsOKAsync()
+        public async Task TestUsingTaskDelayIsOKAsync()
         {
             string testCode = @"
 using System.Threading.Tasks;
