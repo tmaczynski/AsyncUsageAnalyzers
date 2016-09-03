@@ -53,6 +53,29 @@ namespace AsyncUsageAnalyzers.Usage
 
         protected override AnalyzerBase GetAnalyzer() => new Analyzer();
 
+        public static bool IsInsideAsyncCode(InvocationExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
+        {
+            foreach (var syntaxNode in invocationExpression.Ancestors())
+            {
+                var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
+                if (methodDeclaration != null)
+                {
+                    enclosingMethodOrFunctionDeclaration = syntaxNode;
+                    return HasAsyncMethodModifier(methodDeclaration);
+                }
+
+                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
+                var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
+                if (anonymousFunction != null)
+                {
+                    enclosingMethodOrFunctionDeclaration = syntaxNode;
+                    return IsAsyncAnonymousFunction(anonymousFunction);
+                }
+            }
+
+            return false;
+        }
+
         private sealed class Analyzer : DontUseThreadSleepAnalyzerBase.AnalyzerBase
         {
             protected override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
@@ -72,29 +95,6 @@ namespace AsyncUsageAnalyzers.Usage
                         context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.AsyncAnonymousFunctionsAndMethods));
                     }
                 }
-            }
-
-            private static bool IsInsideAsyncCode(InvocationExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
-            {
-                foreach (var syntaxNode in invocationExpression.Ancestors())
-                {
-                    var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
-                    if (methodDeclaration != null)
-                    {
-                        enclosingMethodOrFunctionDeclaration = syntaxNode;
-                        return HasAsyncMethodModifier(methodDeclaration);
-                    }
-
-                    // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
-                    var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
-                    if (anonymousFunction != null)
-                    {
-                        enclosingMethodOrFunctionDeclaration = syntaxNode;
-                        return IsAsyncAnonymousFunction(anonymousFunction);
-                    }
-                }
-
-                return false;
             }
         }
 
