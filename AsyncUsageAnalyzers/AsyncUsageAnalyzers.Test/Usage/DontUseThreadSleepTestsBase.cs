@@ -58,7 +58,12 @@ class ClassA
 }";
 
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInAsyncMethodExpectedResult, CancellationToken.None).ConfigureAwait(false);
-            await this.VerifyCSharpFixAllFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(
+                    testCode,
+                    fixedCode,
+                    cancellationToken: CancellationToken.None,
+                    allowNewCompilerDiagnostics: true /* expected new diagnostic is "hidden CS8019: Unnecessary using directive." */)
+                .ConfigureAwait(false);
         }
 
         protected abstract DiagnosticResult[] TestThreadSleepInLambdaExpectedResult { get; }
