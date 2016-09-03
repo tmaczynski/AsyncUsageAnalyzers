@@ -66,7 +66,7 @@ namespace AsyncUsageAnalyzers.Usage
         {
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    "Code Fix for " /* ReadabilityResources.SA1139CodeFix*/,
+                    "Use await System.Threading.Tasks.Task.Delay(...)",
                     cancellationToken => GetTransformedDocumentAsync(context.Document, diagnostic, cancellationToken)),
                 diagnostic);
         }
