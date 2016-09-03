@@ -85,7 +85,7 @@ class ClassA
         }
 
         [Fact]
-        public async Task TestThreadSleepInAsyncLambdaAsync()
+        public async Task TestThreadSleepInAsyncAnonymousFunctionAsync()
         {
             string testCode = @"
 using System;
