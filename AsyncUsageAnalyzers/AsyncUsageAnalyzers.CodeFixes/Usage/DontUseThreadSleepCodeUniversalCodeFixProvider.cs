@@ -53,7 +53,7 @@ namespace AsyncUsageAnalyzers.Usage
                     var root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
                     var invocationExpression = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
                     SyntaxNode methodOrFunctionNode = null;
-                    if (DontUseThreadSleepInAsyncCodeAnalyzer.IsInsideAsyncCode(invocationExpression, ref methodOrFunctionNode))
+                    if (invocationExpression.IsInsideAsyncCode(ref methodOrFunctionNode))
                     {
                         RegisterCodeFixForDiagnosic(context, diagnostic);
                     }

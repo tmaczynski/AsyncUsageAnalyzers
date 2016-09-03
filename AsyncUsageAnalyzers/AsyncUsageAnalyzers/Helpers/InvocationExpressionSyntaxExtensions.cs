@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AsyncUsageAnalyzers.Helpers
@@ -22,7 +23,7 @@ namespace AsyncUsageAnalyzers.Helpers
             string methodName,
             out IMethodSymbol methodSymbol)
         {
-            methodSymbol = semanticModel.GetSymbolInfo(invocationExpression).Symbol as IMethodSymbol;
+            methodSymbol = ModelExtensions.GetSymbolInfo(semanticModel, invocationExpression).Symbol as IMethodSymbol;
             if (methodSymbol == null)
             {
                 return false;
@@ -41,5 +42,35 @@ namespace AsyncUsageAnalyzers.Helpers
 
             return true;
         }
+
+        public static bool IsInsideAsyncCode(this InvocationExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
+        {
+            foreach (var syntaxNode in invocationExpression.Ancestors())
+            {
+                var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
+                if (methodDeclaration != null)
+                {
+                    enclosingMethodOrFunctionDeclaration = syntaxNode;
+                    return HasAsyncMethodModifier(methodDeclaration);
+                }
+
+                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
+                var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
+                if (anonymousFunction != null)
+                {
+                    enclosingMethodOrFunctionDeclaration = syntaxNode;
+                    return IsAsyncAnonymousFunction(anonymousFunction);
+                }
+            }
+
+            return false;
+        }
+
+        private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration) =>
+            methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
+
+        private static bool IsAsyncAnonymousFunction(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
+            anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
+
     }
 }
