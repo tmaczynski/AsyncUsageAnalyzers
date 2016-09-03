@@ -269,6 +269,12 @@ class ClassA
 }";
 
             await this.VerifyCSharpDiagnosticAsync(testCode, this.TestThreadSleepInMethod, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(
+                    testCode,
+                    testCode /* source code should not be changed as there's no automatic code fix */,
+                    cancellationToken: CancellationToken.None,
+                    numberOfFixAllIterations: -this.TestThreadSleepInMethod.Length)
+                .ConfigureAwait(false);
         }
 
         [Fact]
