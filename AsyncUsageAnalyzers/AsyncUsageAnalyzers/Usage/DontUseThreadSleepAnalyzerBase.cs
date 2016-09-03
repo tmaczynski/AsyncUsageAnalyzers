@@ -5,13 +5,7 @@
 
 namespace AsyncUsageAnalyzers.Usage
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using AsyncUsageAnalyzers.Helpers;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -45,7 +39,7 @@ namespace AsyncUsageAnalyzers.Usage
                 var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
                 // This check aims at increasing the performance.
-                // Thanks to it, getting a semantic model in not necessary in majority of cases
+                // Thanks to it, getting a semantic model in not necessary in majority of cases.
                 if (!invocationExpression.Expression.GetText().ToString().Contains("Sleep"))
                 {
                     return;
