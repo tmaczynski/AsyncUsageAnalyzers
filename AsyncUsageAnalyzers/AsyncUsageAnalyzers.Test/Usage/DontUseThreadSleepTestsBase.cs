@@ -26,7 +26,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
         /// <param name="diagnostic">a diagnostic to be modified</param>
         /// <param name="arguments">arguments which can be used to update diagnostic</param>
         /// <returns>An appropriately modified diagnostic or unchanged diagnostic</returns>
-        public abstract DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments);
+        protected abstract DiagnosticResult OptionallyAddArgumentsToDiagnostic(DiagnosticResult diagnostic, params object[] arguments);
 
         [Fact]
         public async Task TestThreadSleepInAsyncMethodAsync()
