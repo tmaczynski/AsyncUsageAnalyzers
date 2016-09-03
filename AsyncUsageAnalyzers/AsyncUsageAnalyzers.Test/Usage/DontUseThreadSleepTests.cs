@@ -48,11 +48,30 @@ class ClassA
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedResult, CancellationToken.None).ConfigureAwait(false);
         }
 
-        protected override DiagnosticResult[] TestThreadSleepInAnonymousMethodExpectedResult =>
-            new[]
-            {
-                this.CSharpDiagnostic().WithLocation(11, 9)
-            };
+        [Fact]
+        public async Task TestThreadSleepInAnonymousMethodAsync()
+        {
+            string testCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public delegate void SampleDelegate();
+    SampleDelegate AnonymousMethod1 = delegate ()
+    {
+        Thread.Sleep(0);
+    };
+}";
+            var result =
+                new[]
+                {
+                    this.CSharpDiagnostic().WithLocation(11, 9)
+                };
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
+        }
 
         protected override DiagnosticResult[] TestThreadSleepStaticImportExpectedResult => new[]
             {
