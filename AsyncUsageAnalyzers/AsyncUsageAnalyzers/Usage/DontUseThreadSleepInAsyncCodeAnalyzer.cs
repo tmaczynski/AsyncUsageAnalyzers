@@ -53,35 +53,12 @@ namespace AsyncUsageAnalyzers.Usage
 
         protected override AnalyzerBase GetAnalyzer() => new Analyzer();
 
-        public static bool IsInsideAsyncCode(InvocationExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
-        {
-            foreach (var syntaxNode in invocationExpression.Ancestors())
-            {
-                var methodDeclaration = syntaxNode as MethodDeclarationSyntax;
-                if (methodDeclaration != null)
-                {
-                    enclosingMethodOrFunctionDeclaration = syntaxNode;
-                    return HasAsyncMethodModifier(methodDeclaration);
-                }
-
-                // This handles also AnonymousMethodExpressionSyntax since AnonymousMethodExpressionSyntax inherits from AnonymousFunctionExpressionSyntax
-                var anonymousFunction = syntaxNode as AnonymousFunctionExpressionSyntax;
-                if (anonymousFunction != null)
-                {
-                    enclosingMethodOrFunctionDeclaration = syntaxNode;
-                    return IsAsyncAnonymousFunction(anonymousFunction);
-                }
-            }
-
-            return false;
-        }
-
         private sealed class Analyzer : DontUseThreadSleepAnalyzerBase.AnalyzerBase
         {
             protected override void ReportDiagnosticOnThreadSleepInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
             {
                 SyntaxNode asycNode = null;
-                if (IsInsideAsyncCode(invocationExpression, ref asycNode))
+                if (invocationExpression.IsInsideAsyncCode(ref asycNode))
                 {
                     var asyncMethod = asycNode as MethodDeclarationSyntax;
                     if (asyncMethod != null)
@@ -97,12 +74,6 @@ namespace AsyncUsageAnalyzers.Usage
                 }
             }
         }
-
-        private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration) =>
-            methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
-
-        private static bool IsAsyncAnonymousFunction(AnonymousFunctionExpressionSyntax anonymousFunctionExpressionSyntax) =>
-            anonymousFunctionExpressionSyntax.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword;
 
         private static string GetMethodText(string methodName) =>
             string.Format(UsageResources.MethodFormat, methodName);
