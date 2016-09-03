@@ -51,9 +51,9 @@ namespace AsyncUsageAnalyzers.Usage
 
                     // TODO: check it awaiting stuff here does not cause a major slowdown
                     var root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
-                    var tokenWithDiagnostic = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
+                    var invocationExpression = root.FindNode(TextSpan.FromBounds(diagnostic.Location.SourceSpan.Start, diagnostic.Location.SourceSpan.End), getInnermostNodeForTie: true) as InvocationExpressionSyntax;
                     SyntaxNode methodOrFunctionNode = null;
-                    if (DontUseThreadSleepInAsyncCodeAnalyzer.IsInsideAsyncCode(tokenWithDiagnostic, ref methodOrFunctionNode))
+                    if (DontUseThreadSleepInAsyncCodeAnalyzer.IsInsideAsyncCode(invocationExpression, ref methodOrFunctionNode))
                     {
                         RegisterCodeFixForDiagnosic(context, diagnostic);
                     }
