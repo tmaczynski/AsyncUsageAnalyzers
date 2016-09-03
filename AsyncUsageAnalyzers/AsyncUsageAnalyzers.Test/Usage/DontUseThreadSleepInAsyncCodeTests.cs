@@ -3,6 +3,8 @@
 
 /* Contributor: Tomasz Maczyński */
 
+using System.Threading;
+
 namespace AsyncUsageAnalyzers.Test.Usage
 {
     using AsyncUsageAnalyzers.Usage;
@@ -13,6 +15,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using Microsoft.CodeAnalysis.Diagnostics;
     using TestHelper;
     using Xunit;
+    using System.Threading.Tasks;
 
     public class DontUseThreadSleepInAsyncCodeTests : DontUseThreadSleepTestsBase
     {
@@ -24,8 +27,6 @@ namespace AsyncUsageAnalyzers.Test.Usage
             {
                 this.CSharpDiagnostic().WithArguments(UsageResources.AsyncAnonymousFunctionsAndMethods, string.Empty).WithLocation(12, 13)
             };
-
-        protected override DiagnosticResult[] TestThreadSleepInLambdaExpectedResult => EmptyDiagnosticResults;
 
         protected override DiagnosticResult[] TestThreadSleepInAsyncAnonymousMethodExpectedResult =>
             new[]
@@ -40,6 +41,29 @@ namespace AsyncUsageAnalyzers.Test.Usage
             {
                 this.CSharpDiagnostic().WithArguments(string.Format(UsageResources.MethodFormat, "Method1Async")).WithLocation(10, 9)
             };
+
+        [Fact]
+        public async Task TestThreadSleepNonAsyncCodeAsync()
+        {
+            string testCode = @"
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class ClassA
+{
+    public void BadExample()
+    {
+        Func<int,int> testFunc = (x) =>
+        {
+            Thread.Sleep(0);
+            return x;
+        };
+    }
+}";
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
 
         protected override DiagnosticResult[] TestThreadSleepInMethod => EmptyDiagnosticResults;
 
