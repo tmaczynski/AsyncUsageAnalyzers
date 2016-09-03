@@ -16,7 +16,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     public abstract class DontUseThreadSleepTestsBase : CodeFixVerifier
     {
         /// <summary>
-        /// Return a new diagnostic using with updated arguments or leaves a diagnostic intact.
+        /// Returns a new diagnostic using with updated arguments or leaves a diagnostic intact.
         /// </summary>
         /// <param name="diagnostic">a diagnostic to be modified</param>
         /// <param name="arguments">arguments which can be used to update diagnostic</param>
