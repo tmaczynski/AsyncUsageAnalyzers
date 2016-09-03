@@ -71,8 +71,6 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static AwaitExpressionSyntax GenerateTaskDelayExpression(
             ArgumentListSyntax methodArgumentList) =>
-
-                // SyntaxFactory.ExpressionStatement(
                 SyntaxFactory.AwaitExpression(
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
