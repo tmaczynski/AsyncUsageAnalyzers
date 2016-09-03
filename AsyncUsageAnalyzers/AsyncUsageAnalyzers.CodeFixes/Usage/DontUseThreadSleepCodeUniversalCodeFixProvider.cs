@@ -64,7 +64,7 @@ namespace AsyncUsageAnalyzers.Usage
 
             var newExpression = GenerateTaskDelayExpression(arguments);
 
-            SyntaxNode newRoot = root.ReplaceNode(expression, newExpression);
+            SyntaxNode newRoot = root.ReplaceNode(expression, newExpression.WithTriviaFrom(firstNodeWithCorrectSpan));
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
         }
@@ -72,31 +72,28 @@ namespace AsyncUsageAnalyzers.Usage
         private static AwaitExpressionSyntax GenerateTaskDelayExpression(
             ArgumentListSyntax methodArgumentList) =>
 
-                    // SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AwaitExpression(
-                            SyntaxFactory.InvocationExpression(
+                // SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AwaitExpression(
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.MemberAccessExpression(
-                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                SyntaxFactory.IdentifierName("System"),
-                                                SyntaxFactory.IdentifierName("Threading")),
-                                            SyntaxFactory.IdentifierName("Tasks")),
-                                        SyntaxFactory.IdentifierName("Task")),
-                                    SyntaxFactory.IdentifierName("Delay")))
-                                .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.LiteralExpression(
-                                                    SyntaxKind.NumericLiteralExpression,
-                                                    SyntaxFactory.Literal(1000)) /* methodArgumentList */)))))
-
-                        .NormalizeWhitespace();
-
+                                        SyntaxFactory.IdentifierName("System"),
+                                        SyntaxFactory.IdentifierName("Threading")),
+                                    SyntaxFactory.IdentifierName("Tasks")),
+                                SyntaxFactory.IdentifierName("Task")),
+                            SyntaxFactory.IdentifierName("Delay")))
+                        .WithArgumentList(
+                            SyntaxFactory.ArgumentList(
+                                SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.NumericLiteralExpression,
+                                            SyntaxFactory.Literal(1000)) /* methodArgumentList */)))));
     }
 }
