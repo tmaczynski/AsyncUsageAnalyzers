@@ -71,6 +71,11 @@ class ClassA
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(
+                    testCode,
+                    testCode /* source code should not be changed as there's no automatic code fix */,
+                    cancellationToken: CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         [Fact]
@@ -96,6 +101,11 @@ class ClassA
                 };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(
+                    testCode,
+                    testCode /* source code should not be changed as there's no automatic code fix */,
+                    cancellationToken: CancellationToken.None)
+                .ConfigureAwait(false);
         }
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
