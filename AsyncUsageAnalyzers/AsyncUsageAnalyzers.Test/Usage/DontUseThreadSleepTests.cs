@@ -50,7 +50,7 @@ class ClassA
         }
 
         [Fact]
-        public async Task TestThreadSleepInLambdaAsync()
+        public async Task TestThreadSleepInAnonymousFunctionAsync()
         {
             var testCode = @"
 using System;

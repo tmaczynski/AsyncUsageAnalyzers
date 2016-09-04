@@ -19,7 +19,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
             diagnostic.WithArguments(arguments);
 
         [Fact]
-        public async Task TestThreadSleepNonAsyncCodeAsync()
+        public async Task TestThreadSleepInNonAsyncCodeAsync()
         {
             string testCode = @"
 using System;

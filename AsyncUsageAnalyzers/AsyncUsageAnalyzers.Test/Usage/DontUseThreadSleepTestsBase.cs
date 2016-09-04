@@ -16,7 +16,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     public abstract class DontUseThreadSleepTestsBase : CodeFixVerifier
     {
         /// <summary>
-        /// Returns a new diagnostic using with updated arguments or leaves a diagnostic intact.
+        /// Returns a new diagnostic with updated arguments or leaves a diagnostic intact.
         /// </summary>
         /// <param name="diagnostic">a diagnostic to be modified</param>
         /// <param name="arguments">arguments which can be used to update diagnostic</param>
@@ -33,7 +33,7 @@ using static System.Threading.Thread;
 
 class ClassA
 {
-    public async Task<int> Method1Async()
+    public async Task<int> MethodAsync()
     {
         Sleep(1);
         Thread.Sleep(2);
@@ -50,7 +50,7 @@ using static System.Threading.Thread;
 
 class ClassA
 {
-    public async Task<int> Method1Async()
+    public async Task<int> MethodAsync()
     {
         await System.Threading.Tasks.Task.Delay(1);
         await System.Threading.Tasks.Task.Delay(2);
@@ -67,7 +67,7 @@ class ClassA
                     this.CSharpDiagnostic().WithLocation(12, 9),
                     this.CSharpDiagnostic().WithLocation(13, 9)
                 }
-                .Select(diag => this.OptionallyAddArgumentsToDiagnostic(diag, string.Format(UsageResources.MethodFormat, "Method1Async")))
+                .Select(diag => this.OptionallyAddArgumentsToDiagnostic(diag, string.Format(UsageResources.MethodFormat, "MethodAsync")))
                 .ToArray();
 
             await this.VerifyCSharpDiagnosticAsync(testCode, expectedResults, CancellationToken.None).ConfigureAwait(false);
@@ -140,7 +140,7 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate Task<int> SampleDelegate();
-    SampleDelegate AnonymousMethod1 = async delegate ()
+    SampleDelegate AnonymousMethod = async delegate ()
     {
         Thread.Sleep(0);
         return await Task.FromResult(0);
@@ -154,7 +154,7 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate Task<int> SampleDelegate();
-    SampleDelegate AnonymousMethod1 = async delegate ()
+    SampleDelegate AnonymousMethod = async delegate ()
     {
         await System.Threading.Tasks.Task.Delay(0);
         return await Task.FromResult(0);
