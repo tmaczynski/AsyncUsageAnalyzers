@@ -65,12 +65,9 @@ class ClassA
         return x;
     };
 }";
-            var expectedResult = new[]
-            {
-                this.CSharpDiagnostic().WithLocation(10, 9)
-            };
+            var expected = this.CSharpDiagnostic().WithLocation(10, 9);
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, expectedResult, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     testCode /* source code should not be changed as there's no automatic code fix */,
@@ -94,13 +91,9 @@ class ClassA
         Thread.Sleep(0);
     };
 }";
-            var result =
-                new[]
-                {
-                    this.CSharpDiagnostic().WithLocation(11, 9)
-                };
+            var expected = this.CSharpDiagnostic().WithLocation(11, 9);
 
-            await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
             await this.VerifyCSharpFixAllFixAsync(
                     testCode,
                     testCode /* source code should not be changed as there's no automatic code fix */,
