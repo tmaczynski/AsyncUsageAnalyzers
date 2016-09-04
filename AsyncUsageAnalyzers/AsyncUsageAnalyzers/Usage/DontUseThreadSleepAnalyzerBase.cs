@@ -19,7 +19,6 @@ namespace AsyncUsageAnalyzers.Usage
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            // Code below requires Microsoft.CodeAnalysis to be upgraded from version 1.0.0.0 to a version that supports that operations
             var analyzer = this.GetAnalyzer();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
