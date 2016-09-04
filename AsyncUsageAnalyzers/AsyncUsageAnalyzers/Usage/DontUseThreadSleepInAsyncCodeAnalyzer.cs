@@ -15,7 +15,7 @@ namespace AsyncUsageAnalyzers.Usage
 
     /// <summary>
     /// This analyzer reports a diagnostic if System.Threading.Thread.Sleep() method is inside async code
-    /// (i.e. asynchronous methods, anonymous functions or anonymous methods).
+    /// (i.e. asynchronous methods, asynchronous anonymous functions or asynchronous anonymous methods).
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class DontUseThreadSleepInAsyncCodeAnalyzer : DontUseThreadSleepAnalyzerBase

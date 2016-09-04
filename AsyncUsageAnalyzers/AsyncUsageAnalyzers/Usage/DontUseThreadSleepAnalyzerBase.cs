@@ -12,7 +12,7 @@ namespace AsyncUsageAnalyzers.Usage
     using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
-    /// This analyzer a base class for analyzers repoting usage of System.Threading.Thread.Sleep() method.
+    /// This analyzer is a base class for analyzers repoting usage of System.Threading.Thread.Sleep() method in various scenerios.
     /// </summary>
     public abstract class DontUseThreadSleepAnalyzerBase : DiagnosticAnalyzer
     {
