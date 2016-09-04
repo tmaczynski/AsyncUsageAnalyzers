@@ -89,23 +89,22 @@ namespace AsyncUsageAnalyzers.Usage
             return newDocument;
         }
 
-        private static AwaitExpressionSyntax GenerateTaskDelayExpression(
-            ArgumentListSyntax methodArgumentList) =>
-                SyntaxFactory.AwaitExpression(
-                    SyntaxFactory.InvocationExpression(
+        private static AwaitExpressionSyntax GenerateTaskDelayExpression(ArgumentListSyntax methodArgumentList) =>
+            SyntaxFactory.AwaitExpression(
+                SyntaxFactory.InvocationExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("System"),
-                                        SyntaxFactory.IdentifierName("Threading")),
-                                    SyntaxFactory.IdentifierName("Tasks")),
-                                SyntaxFactory.IdentifierName("Task")),
-                            SyntaxFactory.IdentifierName("Delay")))
-                        .WithArgumentList(methodArgumentList));
+                                    SyntaxFactory.IdentifierName("System"),
+                                    SyntaxFactory.IdentifierName("Threading")),
+                                SyntaxFactory.IdentifierName("Tasks")),
+                            SyntaxFactory.IdentifierName("Task")),
+                        SyntaxFactory.IdentifierName("Delay")))
+                    .WithArgumentList(methodArgumentList));
     }
 }
