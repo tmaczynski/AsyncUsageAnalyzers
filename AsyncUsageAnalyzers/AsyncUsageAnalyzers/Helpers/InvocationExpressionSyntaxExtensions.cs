@@ -62,6 +62,12 @@ namespace AsyncUsageAnalyzers.Helpers
             return false;
         }
 
+        public static bool IsInsideAsyncCode(this InvocationExpressionSyntax invocationExpression)
+        {
+            SyntaxNode enclosingMethodOrFunctionDeclaration = null;
+            return invocationExpression.IsInsideAsyncCode(ref enclosingMethodOrFunctionDeclaration);
+        }
+
         private static bool HasAsyncMethodModifier(MethodDeclarationSyntax methodDeclaration) =>
             methodDeclaration.Modifiers.Any(x => x.Kind() == SyntaxKind.AsyncKeyword);
 

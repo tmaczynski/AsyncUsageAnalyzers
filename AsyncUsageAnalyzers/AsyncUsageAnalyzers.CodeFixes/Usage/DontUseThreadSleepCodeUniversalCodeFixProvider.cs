@@ -53,8 +53,7 @@ namespace AsyncUsageAnalyzers.Usage
                         return;
                     }
 
-                    SyntaxNode methodOrFunctionNode = null;
-                    if (invocationExpression.IsInsideAsyncCode(ref methodOrFunctionNode))
+                    if (invocationExpression.IsInsideAsyncCode())
                     {
                         RegisterCodeFixForDiagnosic(context, diagnostic);
                     }
