@@ -89,7 +89,7 @@ using System.Threading.Tasks;
 
 class ClassA
 {
-    public void BadExample()
+    public void MethodA()
     {
         Func<Task> testFunc = async () =>
         {
@@ -106,7 +106,7 @@ using System.Threading.Tasks;
 
 class ClassA
 {
-    public void BadExample()
+    public void MethodA()
     {
         Func<Task> testFunc = async () =>
         {
@@ -137,7 +137,7 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate Task<int> SampleDelegate();
-    SampleDelegate AnonymousMethod = async delegate ()
+    SampleDelegate AsyncAnonymousMethod = async delegate ()
     {
         Thread.Sleep(0);
         return await Task.FromResult(0);
@@ -151,7 +151,7 @@ using System.Threading.Tasks;
 class ClassA
 {
     public delegate Task<int> SampleDelegate();
-    SampleDelegate AnonymousMethod = async delegate ()
+    SampleDelegate AsyncAnonymousMethod = async delegate ()
     {
         await System.Threading.Tasks.Task.Delay(0);
         return await Task.FromResult(0);
