@@ -17,12 +17,12 @@
 
 ## Cause
 
-System.Threading.Thread.Sleep() method is called in the async code (i.e. asynchronous method, anonymous function or anonymous method).
+System.Threading.Thread.Sleep() method is called in the async code (i.e. asynchronous method, asynchronous anonymous function or asynchronous anonymous method).
 
 ## Rule description
 
-System.Threading.Thread.Sleep() method is called in the async code. 
-The code is not optimal - the thread that is sleeping cannot execute any other task.
+System.Threading.Thread.Sleep() method is called in the asynchronous code. 
+The code is not optimal - the thread that is sleeping cannot execute any other tasks.
 
 ## How to fix violations
 
