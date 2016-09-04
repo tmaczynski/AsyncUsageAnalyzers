@@ -111,7 +111,6 @@
     <EmbeddedResource Include="Usage\UsageResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UsageResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
