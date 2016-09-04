@@ -19,6 +19,37 @@ namespace AsyncUsageAnalyzers.Test.Usage
             diagnostic;
 
         [Fact]
+        public async Task TestThreadSleepInMethodAsync()
+        {
+            var testCode = @"
+using System.Threading.Tasks;
+using System.Threading;
+
+class ClassA
+{
+    public void NonAsyncMethod()
+    {
+        Thread.Sleep(1000);
+        System.Threading.Thread.Sleep(1000);
+        global::System.Threading.Thread.Sleep(1000);
+    }
+}";
+            var expected = new[]
+            {
+                this.CSharpDiagnostic().WithLocation(9, 9),
+                this.CSharpDiagnostic().WithLocation(10, 9),
+                this.CSharpDiagnostic().WithLocation(11, 9)
+            };
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAllFixAsync(
+                    testCode,
+                    testCode /* source code should not be changed as there's no automatic code fix */,
+                    cancellationToken: CancellationToken.None)
+                .ConfigureAwait(false);
+        }
+
+        [Fact]
         public async Task TestThreadSleepInLambdaAsync()
         {
             var testCode = @"
@@ -65,37 +96,6 @@ class ClassA
                 };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, result, CancellationToken.None).ConfigureAwait(false);
-        }
-
-        [Fact]
-        public async Task TestThreadSleepInMethodAsync()
-        {
-            var testCode = @"
-using System.Threading.Tasks;
-using System.Threading;
-
-class ClassA
-{
-    public void NonAsyncMethod()
-    {
-        Thread.Sleep(1000);
-        System.Threading.Thread.Sleep(1000);
-        global::System.Threading.Thread.Sleep(1000);
-    }
-}";
-            var expected = new[]
-            {
-                this.CSharpDiagnostic().WithLocation(9, 9),
-                this.CSharpDiagnostic().WithLocation(10, 9),
-                this.CSharpDiagnostic().WithLocation(11, 9)
-            };
-
-            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
-            await this.VerifyCSharpFixAllFixAsync(
-                    testCode,
-                    testCode /* source code should not be changed as there's no automatic code fix */,
-                    cancellationToken: CancellationToken.None)
-                .ConfigureAwait(false);
         }
 
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
