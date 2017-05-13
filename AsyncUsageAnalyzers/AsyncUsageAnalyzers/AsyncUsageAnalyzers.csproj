@@ -80,6 +80,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Usage\IncludeCancellationParameterAnalyzer.cs" />
+    <Compile Include="Usage\PropagateCancellationTokenAnalyzer.cs" />
     <Compile Include="Usage\UsageResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
