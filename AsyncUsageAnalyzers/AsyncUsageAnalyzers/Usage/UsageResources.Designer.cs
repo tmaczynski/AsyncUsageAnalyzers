@@ -89,6 +89,33 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CancellationToken.None should not be explicitly provided in method calls..
+        /// </summary>
+        internal static string PropagateCancellationTokenDescription {
+            get {
+                return ResourceManager.GetString("PropagateCancellationTokenDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CancellationToken.None is explicitly provided in a &apos;{0}&apos; method call..
+        /// </summary>
+        internal static string PropagateCancellationTokenMessageFormat {
+            get {
+                return ResourceManager.GetString("PropagateCancellationTokenMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Propagate CancellationToken.
+        /// </summary>
+        internal static string PropagateCancellationTokenTitle {
+            get {
+                return ResourceManager.GetString("PropagateCancellationTokenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The continuation behavior for a Task should be configured by calling ConfigureAwait prior to awaiting the task..
         /// </summary>
         internal static string UseConfigureAwaitDescription {
