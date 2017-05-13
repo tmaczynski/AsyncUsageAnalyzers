@@ -19,6 +19,7 @@ namespace AsyncUsageAnalyzers.Usage
     /// This analyzer which reports a diagnostic if <see cref="CancellationToken.None"/>.
     /// is explicitly provided in a method call, but another cancellation token is available in the current context.
     /// </summary>
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class PropagateCancellationTokenAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
