@@ -17,10 +17,12 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class PropagateCancellationTokenUnitTests : DiagnosticVerifier
     {
-        [Fact]
-        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync()
+        [Theory]
+        [InlineData("CancellationToken.None")]
+        [InlineData("default(CancellationToken)")]
+        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync(string cancellationTokenString)
         {
-            string testCode = @"
+            var testCodeTemplate = @"
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -30,7 +32,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
             await Task.FromResult(0);
 
         async Task CallingAsyncMethodShortAsync(CancellationToken ct) =>
-            await CalledAsyncMethodShortAsync(CancellationToken.None);
+            await CalledAsyncMethodShortAsync(##);
 
         async Task<int> CalledAsyncMethodLongAsync(CancellationToken ct)
         {
@@ -39,9 +41,10 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
         async Task CallingAsyncMethodLongAsync(CancellationToken ct)
         {
-            await CalledAsyncMethodLongAsync(CancellationToken.None);
+            await CalledAsyncMethodLongAsync(##);
         }
     }";
+            var testCode = testCodeTemplate.Replace("##", cancellationTokenString);
 
             DiagnosticResult[] expected =
             {
@@ -51,6 +54,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
+        // TODO: add TestCancellationTokenNoneDoesNotRiseDiagnosticIfTheresNoOtherCancellationTokenAsync
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
             yield return new PropagateCancellationTokenAnalyzer();
