@@ -78,6 +78,22 @@ class TestCancellationTokenNoneIsUsedNotAsArgument
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Fact]
+        public async Task TestDefaultCancellationTokenCanBeUsedAsOptionalArgumentAsync()
+        {
+            var testCode = @"
+using System.Threading;
+
+class C
+{
+    void M(CancellationToken ct = default(CancellationToken))
+    { 
+    }
+}";
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
         // TODO: add TestCancellationTokenNoneDoesNotRiseDiagnosticIfTheresNoOtherCancellationTokenAsync
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
