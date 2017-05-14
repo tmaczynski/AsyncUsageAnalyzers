@@ -79,7 +79,6 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            // TODO: narrow it down to arguments of the method call
             var enclosingArg = invocationExpression.Parent as ArgumentSyntax;
             var enclosingArgList = enclosingArg?.Parent as ArgumentListSyntax;
             var enclosingInvocationExpr = enclosingArgList?.Parent as InvocationExpressionSyntax;
