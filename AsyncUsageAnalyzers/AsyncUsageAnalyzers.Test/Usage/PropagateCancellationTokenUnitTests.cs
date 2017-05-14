@@ -17,9 +17,17 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class PropagateCancellationTokenUnitTests : DiagnosticVerifier
     {
+        public static IEnumerable<object[]> CancelationTokenNoneAndEquivalents
+        {
+            get
+            {
+                yield return new object[] { "CancellationToken.None" };
+                yield return new object[] { "default(CancellationToken)" };
+            }
+        }
+
         [Theory]
-        [InlineData("CancellationToken.None")]
-        [InlineData("default(CancellationToken)")]
+        [MemberData(nameof(CancelationTokenNoneAndEquivalents))]
         public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync(string cancellationTokenString)
         {
             var testCodeTemplate = @"
@@ -55,8 +63,7 @@ class C
         }
 
         [Theory]
-        [InlineData("CancellationToken.None")]
-        [InlineData("default(CancellationToken)")]
+        [MemberData(nameof(CancelationTokenNoneAndEquivalents))]
         public async Task TestCancellationTokenNoneIsUsedNotAsArgumentAsync(string cancellationTokenString)
         {
             var testCodeTemplate = @"
