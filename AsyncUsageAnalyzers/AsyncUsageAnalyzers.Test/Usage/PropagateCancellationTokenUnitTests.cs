@@ -54,6 +54,30 @@ namespace AsyncUsageAnalyzers.Test.Usage
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
+        [Theory]
+        [InlineData("CancellationToken.None")]
+        [InlineData("default(CancellationToken)")]
+        public async Task TestCancellationTokenNoneIsUsedNotAsArgumentAsync(string cancellationTokenString)
+        {
+            var testCodeTemplate = @"
+using System.Threading;
+
+class TestCancellationTokenNoneIsUsedNotAsArgument
+{
+    CancellationToken cancellationTokenField = ##;
+
+    CancellationToken cancellationTokenProperty => ##;
+
+    void M1()
+    {
+        var cancellationTokenVariable = ##;
+    }
+}";
+            var testCode = testCodeTemplate.Replace("##", cancellationTokenString);
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
         // TODO: add TestCancellationTokenNoneDoesNotRiseDiagnosticIfTheresNoOtherCancellationTokenAsync
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
