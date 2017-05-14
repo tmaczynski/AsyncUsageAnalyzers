@@ -45,8 +45,8 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
             DiagnosticResult[] expected =
             {
-                this.CSharpDiagnostic().WithLocation(11, 47),
-                this.CSharpDiagnostic().WithLocation(20, 46)
+                this.CSharpDiagnostic().WithArguments("CalledAsyncMethodShortAsync").WithLocation(11, 47),
+                this.CSharpDiagnostic().WithArguments("CalledAsyncMethodLongAsync").WithLocation(20, 46)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }

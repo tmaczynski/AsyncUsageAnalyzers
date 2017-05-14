@@ -54,6 +54,28 @@ namespace AsyncUsageAnalyzers.Helpers
             return false;
         }
 
+        public static bool TryGetPropertySymbolByTypeNameAndMethodName(
+            this ExpressionSyntax invocationExpression,
+            SemanticModel semanticModel,
+            string fullyQualifiedName,
+            string propertyName,
+            out IPropertySymbol propertySymbol)
+        {
+            var propertySymbolCandidate = ModelExtensions.GetSymbolInfo(semanticModel, invocationExpression).Symbol as IPropertySymbol;
+            if (propertySymbolCandidate != null)
+            {
+                var typeMetadata = semanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedName);
+                if (typeMetadata.Equals(propertySymbolCandidate.ContainingType) && (propertySymbolCandidate.Name == propertyName))
+                {
+                    propertySymbol = propertySymbolCandidate;
+                    return true;
+                }
+            }
+
+            propertySymbol = null;
+            return false;
+        }
+
         public static bool IsInsideAsyncCode(this ExpressionSyntax invocationExpression, ref SyntaxNode enclosingMethodOrFunctionDeclaration)
         {
             foreach (var syntaxNode in invocationExpression.Ancestors())

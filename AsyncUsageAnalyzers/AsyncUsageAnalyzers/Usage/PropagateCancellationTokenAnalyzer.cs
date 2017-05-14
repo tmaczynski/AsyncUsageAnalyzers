@@ -8,11 +8,14 @@ namespace AsyncUsageAnalyzers.Usage
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Helpers;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
@@ -32,15 +35,61 @@ namespace AsyncUsageAnalyzers.Usage
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(UsageResources.PropagateCancellationTokenDescription), UsageResources.ResourceManager, typeof(UsageResources));
         private static readonly string HelpLink = "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/PropagateCancellationToken.md";
 
+        private static readonly Action<CompilationStartAnalysisContext> CompilationStartAction = HandleCompilationStart;
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
+        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationAction = HandleInvocation;
+
+        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
             ImmutableArray.Create(Descriptor);
 
+        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
-            throw new NotImplementedException();
+            context.RegisterCompilationStartAction(CompilationStartAction);
+        }
+
+        private static void HandleCompilationStart(CompilationStartAnalysisContext context)
+        {
+            context.RegisterSyntaxNodeActionHonorExclusions(HandleInvocationAction, SyntaxKind.SimpleMemberAccessExpression);
+        }
+
+        private static void HandleInvocation(SyntaxNodeAnalysisContext context)
+        {
+            var invocationExpression = (MemberAccessExpressionSyntax)context.Node;
+
+            var semanticModel = context.SemanticModel;
+            var enclosingNamespace = "System.Threading";
+            var className = "CancellationToken";
+            var fullyQualifiedName = $"{enclosingNamespace}.{className}";
+            var propertyName = "None";
+
+            // This check aims at increasing the performance.
+            // Thanks to it, getting a semantic model in not necessary in majority of cases.
+            if (!invocationExpression.Expression.GetText().ToString().Contains(className))
+            {
+                return;
+            }
+
+            IPropertySymbol propertySymbol;
+            if (!invocationExpression.TryGetPropertySymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, propertyName, out propertySymbol))
+            {
+                return;
+            }
+
+            // TODO: narrow it down to arguments of the method call
+            var enclosingArg = invocationExpression.Parent as ArgumentSyntax;
+            var enclosingArgList = enclosingArg?.Parent as ArgumentListSyntax;
+            var enclosingInvocationExpr = enclosingArgList?.Parent as InvocationExpressionSyntax;
+            if (enclosingInvocationExpr == null)
+            {
+                return;
+            }
+
+            var methodName = enclosingInvocationExpr.Expression.ToString();
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), methodName));
         }
     }
 }
