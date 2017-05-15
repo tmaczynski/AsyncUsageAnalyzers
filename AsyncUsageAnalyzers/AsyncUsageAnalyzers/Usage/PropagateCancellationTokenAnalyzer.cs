@@ -83,7 +83,7 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), methodName));
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), UsageResources.DefaultCancellationToken, methodName));
         }
 
         private static void HandleHandleSimpleMemberAccess(SyntaxNodeAnalysisContext context)
@@ -111,7 +111,7 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), methodName));
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.CancellationTokenNone, methodName));
         }
 
         private static bool IsMethodCallArgument(ExpressionSyntax expression, out string methodName)

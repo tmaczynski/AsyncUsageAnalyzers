@@ -62,6 +62,24 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CancellationToken.None.
+        /// </summary>
+        internal static string CancellationTokenNone {
+            get {
+                return ResourceManager.GetString("CancellationTokenNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to default(CancellationToken).
+        /// </summary>
+        internal static string DefaultCancellationToken {
+            get {
+                return ResourceManager.GetString("DefaultCancellationToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Asynchronous methods should include a CancellationToken parameter..
         /// </summary>
         internal static string IncludeCancellationParameterDescription {
@@ -98,7 +116,7 @@ namespace AsyncUsageAnalyzers.Usage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CancellationToken.None is explicitly provided in a &apos;{0}&apos; method call..
+        ///   Looks up a localized string similar to {0} is explicitly provided in a &apos;{1}&apos; method call..
         /// </summary>
         internal static string PropagateCancellationTokenMessageFormat {
             get {

@@ -17,18 +17,21 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
     public class PropagateCancellationTokenUnitTests : DiagnosticVerifier
     {
-        public static IEnumerable<object[]> CancelationTokenNoneAndEquivalents
+        public static IEnumerable<object[]> CancelationTokenNoneEquivalentsWithDiagnosticParameters
         {
             get
             {
-                yield return new object[] { "CancellationToken.None" };
-                yield return new object[] { "default(CancellationToken)" };
+                yield return new[] { "CancellationToken.None", UsageResources.CancellationTokenNone };
+                yield return new[] { "default(CancellationToken)", UsageResources.DefaultCancellationToken };
             }
         }
 
+        public static IEnumerable<object[]> CancelationTokenNoneEquivalents
+            => CancelationTokenNoneEquivalentsWithDiagnosticParameters.Select(x => new[] { x.First() });
+
         [Theory]
-        [MemberData(nameof(CancelationTokenNoneAndEquivalents))]
-        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync(string cancellationTokenString)
+        [MemberData(nameof(CancelationTokenNoneEquivalentsWithDiagnosticParameters))]
+        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync(string cancellationTokenString, string diagnosticParameter)
         {
             var testCodeTemplate = @"
 using System.Threading;
@@ -56,14 +59,14 @@ class C
 
             DiagnosticResult[] expected =
             {
-                this.CSharpDiagnostic().WithArguments("CalledAsyncMethodShortAsync").WithLocation(11, 43),
-                this.CSharpDiagnostic().WithArguments("CalledAsyncMethodLongAsync").WithLocation(20, 42)
+                this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodShortAsync").WithLocation(11, 43),
+                this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodLongAsync").WithLocation(20, 42)
             };
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
         }
 
         [Theory]
-        [MemberData(nameof(CancelationTokenNoneAndEquivalents))]
+        [MemberData(nameof(CancelationTokenNoneEquivalents))]
         public async Task TestCancellationTokenNoneIsUsedNotAsArgumentAsync(string cancellationTokenString)
         {
             var testCodeTemplate = @"

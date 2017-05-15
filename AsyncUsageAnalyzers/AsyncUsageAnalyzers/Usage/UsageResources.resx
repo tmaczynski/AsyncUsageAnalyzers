@@ -126,11 +126,17 @@
   <data name="IncludeCancellationParameterTitle" xml:space="preserve">
     <value>Include CancellationToken parameter</value>
   </data>
+  <data name="CancellationTokenNone" xml:space="preserve">
+    <value>CancellationToken.None</value>
+  </data>
+  <data name="DefaultCancellationToken" xml:space="preserve">
+    <value>default(CancellationToken)</value>
+  </data>
   <data name="PropagateCancellationTokenDescription" xml:space="preserve">
     <value>CancellationToken.None should not be explicitly provided in method calls.</value>
   </data>
   <data name="PropagateCancellationTokenMessageFormat" xml:space="preserve">
-    <value>CancellationToken.None is explicitly provided in a '{0}' method call.</value>
+    <value>{0} is explicitly provided in a '{1}' method call.</value>
   </data>
   <data name="PropagateCancellationTokenTitle" xml:space="preserve">
     <value>Propagate CancellationToken</value>
