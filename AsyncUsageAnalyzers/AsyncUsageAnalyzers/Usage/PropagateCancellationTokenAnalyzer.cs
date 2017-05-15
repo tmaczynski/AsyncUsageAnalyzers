@@ -39,7 +39,13 @@ namespace AsyncUsageAnalyzers.Usage
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
-        private static readonly Action<SyntaxNodeAnalysisContext> HandleInvocationAction = HandleInvocation;
+        private static readonly Action<SyntaxNodeAnalysisContext> HandleSimpleMemberAccessAction = HandleHandleSimpleMemberAccess;
+        private static readonly Action<SyntaxNodeAnalysisContext> HandleDefaultExpressionAction = HandleDefaultExpression;
+
+        private static readonly string CancellationTokenEnclosingNamespace = "System.Threading";
+        private static readonly string CancellationTokenClassName = "CancellationToken";
+        private static readonly string CancellationTokenFullyQualifiedName = $"{CancellationTokenEnclosingNamespace}.{CancellationTokenClassName}";
+        private static readonly string NonePropertyName = "None";
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -53,42 +59,74 @@ namespace AsyncUsageAnalyzers.Usage
 
         private static void HandleCompilationStart(CompilationStartAnalysisContext context)
         {
-            context.RegisterSyntaxNodeActionHonorExclusions(HandleInvocationAction, SyntaxKind.SimpleMemberAccessExpression);
+            context.RegisterSyntaxNodeActionHonorExclusions(HandleSimpleMemberAccessAction, SyntaxKind.SimpleMemberAccessExpression);
+            context.RegisterSyntaxNodeActionHonorExclusions(HandleDefaultExpressionAction, SyntaxKind.DefaultExpression);
         }
 
-        private static void HandleInvocation(SyntaxNodeAnalysisContext context)
+        private static void HandleDefaultExpression(SyntaxNodeAnalysisContext context)
+        {
+            var defaultExpression = (DefaultExpressionSyntax)context.Node;
+            var defaultExpressionType = defaultExpression.Type;
+
+            var semanticModel = context.SemanticModel;
+
+            // TODO: make code below an extension method
+            var symbol = ModelExtensions.GetSymbolInfo(semanticModel, defaultExpressionType).Symbol as ITypeSymbol;
+            if (symbol == null || symbol.Name != CancellationTokenClassName)
+            {
+                return;
+            }
+
+            string methodName;
+            if (IsMethodCallArgument(defaultExpression, out methodName))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), methodName));
+        }
+
+        private static void HandleHandleSimpleMemberAccess(SyntaxNodeAnalysisContext context)
         {
             var invocationExpression = (MemberAccessExpressionSyntax)context.Node;
 
             var semanticModel = context.SemanticModel;
-            var enclosingNamespace = "System.Threading";
-            var className = "CancellationToken";
-            var fullyQualifiedName = $"{enclosingNamespace}.{className}";
-            var propertyName = "None";
 
             // This check aims at increasing the performance.
-            // Thanks to it, getting a semantic model in not necessary in majority of cases.
-            if (!invocationExpression.Expression.GetText().ToString().Contains(className))
+            // Thanks to it, using semantic model in not necessary in majority of cases.
+            if (!invocationExpression.Expression.GetText().ToString().Contains(CancellationTokenClassName))
             {
                 return;
             }
 
             IPropertySymbol propertySymbol;
-            if (!invocationExpression.TryGetPropertySymbolByTypeNameAndMethodName(semanticModel, fullyQualifiedName, propertyName, out propertySymbol))
+            if (!invocationExpression.TryGetPropertySymbolByTypeNameAndMethodName(semanticModel, CancellationTokenFullyQualifiedName, NonePropertyName, out propertySymbol))
             {
                 return;
             }
 
-            var enclosingArg = invocationExpression.Parent as ArgumentSyntax;
+            string methodName;
+            if (IsMethodCallArgument(invocationExpression, out methodName))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), methodName));
+        }
+
+        private static bool IsMethodCallArgument(ExpressionSyntax expression, out string methodName)
+        {
+            var enclosingArg = expression.Parent as ArgumentSyntax;
             var enclosingArgList = enclosingArg?.Parent as ArgumentListSyntax;
             var enclosingInvocationExpr = enclosingArgList?.Parent as InvocationExpressionSyntax;
             if (enclosingInvocationExpr == null)
             {
-                return;
+                methodName = null;
+                return true;
             }
 
-            var methodName = enclosingInvocationExpr.Expression.ToString();
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), methodName));
+            methodName = enclosingInvocationExpr.Expression.ToString();
+            return false;
         }
     }
 }
