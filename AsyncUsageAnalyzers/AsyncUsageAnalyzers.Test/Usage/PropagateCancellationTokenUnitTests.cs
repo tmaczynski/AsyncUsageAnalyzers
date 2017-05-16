@@ -67,6 +67,37 @@ class C
 
         [Theory]
         [MemberData(nameof(CancelationTokenNoneEquivalents))]
+        public async Task TestCancellationTokenNoneDoesNotRiseDiagnosticIfTheresNoOtherCancellationTokenAsync(string cancellationTokenString)
+        {
+            var testCodeTemplate = @"
+using System.Threading;
+using System.Threading.Tasks;
+
+class C
+{
+    async Task<int> CalledAsyncMethodShortAsync(CancellationToken ct) =>
+        await Task.FromResult(0);
+
+    async Task CallingAsyncMethodShortAsync() =>
+        await CalledAsyncMethodShortAsync(##);
+
+    async Task<int> CalledAsyncMethodLongAsync(CancellationToken ct)
+    {
+        return await Task.FromResult(0);
+    }
+
+    async Task CallingAsyncMethodLongAsync()
+    {
+        await CalledAsyncMethodLongAsync(##);
+    }
+}";
+            var testCode = testCodeTemplate.Replace("##", cancellationTokenString);
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        [Theory]
+        [MemberData(nameof(CancelationTokenNoneEquivalents))]
         public async Task TestCancellationTokenNoneIsUsedNotAsArgumentAsync(string cancellationTokenString)
         {
             var testCodeTemplate = @"
@@ -104,7 +135,6 @@ class C
             await this.VerifyCSharpDiagnosticAsync(testCode, EmptyDiagnosticResults, CancellationToken.None).ConfigureAwait(false);
         }
 
-        // TODO: add TestCancellationTokenNoneDoesNotRiseDiagnosticIfTheresNoOtherCancellationTokenAsync
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
             yield return new PropagateCancellationTokenAnalyzer();
