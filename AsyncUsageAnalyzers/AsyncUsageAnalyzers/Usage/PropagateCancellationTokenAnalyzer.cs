@@ -83,6 +83,11 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
+            if (!HasAnotherCancellationTokenInScope(semanticModel, defaultExpression))
+            {
+                return;
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), UsageResources.DefaultCancellationToken, methodName));
         }
 
@@ -111,7 +116,25 @@ namespace AsyncUsageAnalyzers.Usage
                 return;
             }
 
+            if (!HasAnotherCancellationTokenInScope(semanticModel, invocationExpression))
+            {
+                return;
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.CancellationTokenNone, methodName));
+        }
+
+        private static bool HasAnotherCancellationTokenInScope(
+            SemanticModel semanticModel,
+            SyntaxNode node)
+        {
+            var symbols = semanticModel.LookupSymbols(node.SpanStart).ToList();
+
+            // TODO: don't call ToList() in final version
+            var localSymbols = symbols.OfType<ILocalSymbol>().ToList();
+            var parameters = symbols.OfType<IParameterSymbol>().ToList();
+
+            return localSymbols.Any() || parameters.Any();
         }
 
         private static bool IsMethodCallArgument(ExpressionSyntax expression, out string methodName)
