@@ -61,7 +61,7 @@ namespace AsyncUsageAnalyzers.Helpers
             string propertyName,
             out IPropertySymbol propertySymbol)
         {
-            var propertySymbolCandidate = ModelExtensions.GetSymbolInfo(semanticModel, invocationExpression).Symbol as IPropertySymbol;
+            var propertySymbolCandidate = semanticModel.GetSymbolInfo(invocationExpression).Symbol as IPropertySymbol;
             if (propertySymbolCandidate != null)
             {
                 var typeMetadata = semanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedName);
