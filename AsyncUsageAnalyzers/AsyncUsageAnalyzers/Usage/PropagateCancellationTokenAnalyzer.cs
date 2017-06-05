@@ -78,17 +78,10 @@ namespace AsyncUsageAnalyzers.Usage
             }
 
             string methodName;
-            if (IsMethodCallArgument(defaultExpression, out methodName))
+            if (IsMethodArgumentAndAnotherCancellationTokenIsInScope(defaultExpression, semanticModel, out methodName))
             {
-                return;
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), UsageResources.DefaultCancellationToken, methodName));
             }
-
-            if (!HasAnotherCancellationTokenInScope(semanticModel, defaultExpression))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, defaultExpression.GetLocation(), UsageResources.DefaultCancellationToken, methodName));
         }
 
         private static void HandleHandleSimpleMemberAccess(SyntaxNodeAnalysisContext context)
@@ -111,17 +104,19 @@ namespace AsyncUsageAnalyzers.Usage
             }
 
             string methodName;
-            if (IsMethodCallArgument(invocationExpression, out methodName))
+            if (IsMethodArgumentAndAnotherCancellationTokenIsInScope(invocationExpression, semanticModel, out methodName))
             {
-                return;
+                context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.CancellationTokenNone, methodName));
             }
+        }
 
-            if (!HasAnotherCancellationTokenInScope(semanticModel, invocationExpression))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpression.GetLocation(), UsageResources.CancellationTokenNone, methodName));
+        private static bool IsMethodArgumentAndAnotherCancellationTokenIsInScope(
+            ExpressionSyntax expression,
+            SemanticModel semanticModel,
+            out string methodName)
+        {
+            return IsMethodCallArgument(expression, out methodName)
+                   && HasAnotherCancellationTokenInScope(semanticModel, expression);
         }
 
         private static bool HasAnotherCancellationTokenInScope(
@@ -145,11 +140,11 @@ namespace AsyncUsageAnalyzers.Usage
             if (enclosingInvocationExpr == null)
             {
                 methodName = null;
-                return true;
+                return false;
             }
 
             methodName = enclosingInvocationExpr.Expression.ToString();
-            return false;
+            return true;
         }
     }
 }
