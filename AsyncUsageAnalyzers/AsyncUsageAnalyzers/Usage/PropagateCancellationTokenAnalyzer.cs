@@ -35,10 +35,10 @@ namespace AsyncUsageAnalyzers.Usage
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(UsageResources.PropagateCancellationTokenDescription), UsageResources.ResourceManager, typeof(UsageResources));
         private static readonly string HelpLink = "https://github.com/DotNetAnalyzers/AsyncUsageAnalyzers/blob/master/documentation/PropagateCancellationToken.md";
 
-        private static readonly Action<CompilationStartAnalysisContext> CompilationStartAction = HandleCompilationStart;
         private static readonly DiagnosticDescriptor Descriptor =
             new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, AnalyzerConstants.EnabledByDefault, Description, HelpLink);
 
+        private static readonly Action<CompilationStartAnalysisContext> CompilationStartAction = HandleCompilationStart;
         private static readonly Action<SyntaxNodeAnalysisContext> HandleSimpleMemberAccessAction = HandleHandleSimpleMemberAccess;
         private static readonly Action<SyntaxNodeAnalysisContext> HandleDefaultExpressionAction = HandleDefaultExpression;
 
