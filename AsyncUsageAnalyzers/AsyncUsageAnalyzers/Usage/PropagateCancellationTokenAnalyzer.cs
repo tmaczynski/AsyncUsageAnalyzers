@@ -119,6 +119,18 @@ namespace AsyncUsageAnalyzers.Usage
                    && HasAnotherCancellationTokenInScope(semanticModel, expression);
         }
 
+        // TODO: make it extension method
+        private static bool IsOfType(ITypeSymbol typeSymbol, string fullyQualifiedName)
+        {
+            // TODO: factor it out
+            var symbolDisplayFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+
+            return fullyQualifiedName == typeSymbol.ToDisplayString(symbolDisplayFormat);
+        }
+
+        private static bool IsCancellationToken(ITypeSymbol typeSymbol) =>
+            IsOfType(typeSymbol, CancellationTokenFullyQualifiedName);
+
         private static bool HasAnotherCancellationTokenInScope(
             SemanticModel semanticModel,
             SyntaxNode node)
@@ -126,8 +138,8 @@ namespace AsyncUsageAnalyzers.Usage
             var symbols = semanticModel.LookupSymbols(node.SpanStart).ToList();
 
             // TODO: don't call ToList() in final version
-            var localSymbols = symbols.OfType<ILocalSymbol>().ToList();
-            var parameters = symbols.OfType<IParameterSymbol>().ToList();
+            var localSymbols = symbols.OfType<ILocalSymbol>().Where(s => IsCancellationToken(s.Type)).ToList();
+            var parameters = symbols.OfType<IParameterSymbol>().Where(s => IsCancellationToken(s.Type)).ToList();
 
             return localSymbols.Any() || parameters.Any();
         }
