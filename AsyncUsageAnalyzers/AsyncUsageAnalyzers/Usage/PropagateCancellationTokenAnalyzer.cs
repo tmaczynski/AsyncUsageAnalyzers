@@ -70,8 +70,7 @@ namespace AsyncUsageAnalyzers.Usage
 
             var semanticModel = context.SemanticModel;
 
-            // TODO: make code below an extension method
-            var symbol = ModelExtensions.GetSymbolInfo(semanticModel, defaultExpressionType).Symbol as ITypeSymbol;
+            var symbol = semanticModel.GetSymbolInfo(defaultExpressionType).Symbol;
             if (symbol == null || symbol.Name != CancellationTokenClassName)
             {
                 return;
