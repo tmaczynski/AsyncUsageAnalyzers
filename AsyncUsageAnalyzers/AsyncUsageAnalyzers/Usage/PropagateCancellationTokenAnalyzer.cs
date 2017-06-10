@@ -119,17 +119,8 @@ namespace AsyncUsageAnalyzers.Usage
                    && HasAnotherCancellationTokenInScope(semanticModel, expression);
         }
 
-        // TODO: make it extension method
-        private static bool IsOfType(ITypeSymbol typeSymbol, string fullyQualifiedName)
-        {
-            // TODO: factor it out
-            var symbolDisplayFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-
-            return fullyQualifiedName == typeSymbol.ToDisplayString(symbolDisplayFormat);
-        }
-
         private static bool IsCancellationToken(ITypeSymbol typeSymbol) =>
-            IsOfType(typeSymbol, CancellationTokenFullyQualifiedName);
+            typeSymbol.IsOfType(CancellationTokenFullyQualifiedName);
 
         private static bool HasAnotherCancellationTokenInScope(
             SemanticModel semanticModel,
