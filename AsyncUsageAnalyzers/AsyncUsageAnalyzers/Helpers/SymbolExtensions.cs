@@ -9,7 +9,7 @@ namespace AsyncUsageAnalyzers.Helpers
 
     internal static class SymbolExtensions
     {
-        private static readonly SymbolDisplayFormat symbolDisplayFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+        private static readonly SymbolDisplayFormat SymbolDisplayFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
 
         public static bool IsInAnalyzedSource(this ISymbol symbol, ConcurrentDictionary<SyntaxTree, bool> generatedHeaderCache, CancellationToken cancellationToken)
         {
@@ -28,6 +28,6 @@ namespace AsyncUsageAnalyzers.Helpers
         }
 
         public static bool IsOfType(this ITypeSymbol typeSymbol, string fullyQualifiedName) =>
-            fullyQualifiedName == typeSymbol.ToDisplayString(symbolDisplayFormat);
+            fullyQualifiedName == typeSymbol.ToDisplayString(SymbolDisplayFormat);
     }
 }
