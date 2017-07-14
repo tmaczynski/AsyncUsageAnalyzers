@@ -118,7 +118,7 @@ namespace AsyncUsageAnalyzers.Usage
                    && HasAnotherCancellationTokenInScope(semanticModel, expression);
         }
 
-        private static bool IsCancellationToken(ITypeSymbol typeSymbol) =>
+        public static bool IsCancellationToken(ITypeSymbol typeSymbol) =>
             typeSymbol.IsOfType(CancellationTokenFullyQualifiedName);
 
         private static bool HasAnotherCancellationTokenInScope(

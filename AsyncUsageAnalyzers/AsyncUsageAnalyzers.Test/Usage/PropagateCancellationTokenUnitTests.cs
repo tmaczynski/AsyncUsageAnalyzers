@@ -15,7 +15,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
     using TestHelper;
     using Xunit;
 
-    public class PropagateCancellationTokenUnitTests : DiagnosticVerifier
+    public class PropagateCancellationTokenUnitTests : CodeFixVerifier
     {
         public static IEnumerable<object[]> CancelationTokenNoneEquivalentsWithDiagnosticParameters
         {
@@ -55,6 +55,30 @@ class C
         await CalledAsyncMethodLongAsync(##);
     }
 }";
+
+            var fixedCode = @"
+using System.Threading;
+using System.Threading.Tasks;
+
+class C
+{
+    async Task<int> CalledAsyncMethodShortAsync(CancellationToken ct) =>
+        await Task.FromResult(0);
+
+    async Task CallingAsyncMethodShortAsync(CancellationToken ct) =>
+        await CalledAsyncMethodShortAsync(ct);
+
+    async Task<int> CalledAsyncMethodLongAsync(CancellationToken ct)
+    {
+        return await Task.FromResult(0);
+    }
+
+    async Task CallingAsyncMethodLongAsync(CancellationToken ct)
+    {
+        await CalledAsyncMethodLongAsync(ct);
+    }
+}";
+
             var testCode = testCodeTemplate.Replace("##", cancellationTokenString);
 
             DiagnosticResult[] expected =
@@ -62,7 +86,9 @@ class C
                 this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodShortAsync").WithLocation(11, 43),
                 this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodLongAsync").WithLocation(20, 42)
             };
+
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
         }
 
         [Theory]
@@ -172,6 +198,11 @@ class C
         protected override IEnumerable<DiagnosticAnalyzer> GetCSharpDiagnosticAnalyzers()
         {
             yield return new PropagateCancellationTokenAnalyzer();
+        }
+
+        protected override CodeFixProvider GetCSharpCodeFixProvider()
+        {
+            return new PropagateCancellationTokenCodeFixProvider();
         }
     }
 }
