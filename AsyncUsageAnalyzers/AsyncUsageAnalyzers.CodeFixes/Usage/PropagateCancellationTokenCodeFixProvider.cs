@@ -79,6 +79,20 @@ namespace AsyncUsageAnalyzers.Usage
                                 cancellationToken => GetTransformedDocumentAsync(displayString, context.Document, diagnostic, cancellationToken)),
                             diagnostic);
                     }
+
+                    var localSymbol = recommendedSymbol as ILocalSymbol;
+                    if (localSymbol != null
+                        && PropagateCancellationTokenAnalyzer.IsCancellationToken(localSymbol.Type)
+                        && localSymbol.CanBeReferencedByName)
+                    {
+                        var displayString = localSymbol.Name;
+
+                        context.RegisterCodeFix(
+                            CodeAction.Create(
+                                "Propagate Cancellation Tokens",
+                                cancellationToken => GetTransformedDocumentAsync(displayString, context.Document, diagnostic, cancellationToken)),
+                            diagnostic);
+                    }
                 }
             }
         }

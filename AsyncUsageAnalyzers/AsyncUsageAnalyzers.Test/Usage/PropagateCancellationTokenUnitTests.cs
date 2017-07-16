@@ -31,7 +31,7 @@ namespace AsyncUsageAnalyzers.Test.Usage
 
         [Theory]
         [MemberData(nameof(CancelationTokenNoneEquivalentsWithDiagnosticParameters))]
-        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsync(string cancellationTokenString, string diagnosticParameter)
+        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenInParameterAsync(string cancellationTokenString, string diagnosticParameter)
         {
             var testCodeTemplate = @"
 using System.Threading;
@@ -85,6 +85,57 @@ class C
             {
                 this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodShortAsync").WithLocation(11, 43),
                 this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodLongAsync").WithLocation(20, 42)
+            };
+
+            await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
+            await this.VerifyCSharpFixAsync(testCode, fixedCode, cancellationToken: CancellationToken.None).ConfigureAwait(false);
+        }
+
+        [Theory]
+        [MemberData(nameof(CancelationTokenNoneEquivalentsWithDiagnosticParameters))]
+        public async Task TestCancellationTokenNoneRisesDiagnosticIfTheresAnotherTokenAsLocalVariableAsync(string cancellationTokenString, string diagnosticParameter)
+        {
+            var testCodeTemplate = @"
+using System.Threading;
+using System.Threading.Tasks;
+
+class C
+{
+    async Task<int> CalledAsyncMethodAsync(CancellationToken ct)
+    {
+        return await Task.FromResult(0);
+    }
+
+    async Task CallingAsyncMethodAsync()
+    {
+        var ct = CancellationToken.None;
+        await CalledAsyncMethodAsync(##);
+    }
+}";
+
+            var fixedCode = @"
+using System.Threading;
+using System.Threading.Tasks;
+
+class C
+{
+    async Task<int> CalledAsyncMethodAsync(CancellationToken ct)
+    {
+        return await Task.FromResult(0);
+    }
+
+    async Task CallingAsyncMethodAsync()
+    {
+        var ct = CancellationToken.None;
+        await CalledAsyncMethodAsync(ct);
+    }
+}";
+
+            var testCode = testCodeTemplate.Replace("##", cancellationTokenString);
+
+            DiagnosticResult[] expected =
+            {
+                this.CSharpDiagnostic().WithArguments(diagnosticParameter, "CalledAsyncMethodAsync").WithLocation(15, 38),
             };
 
             await this.VerifyCSharpDiagnosticAsync(testCode, expected, CancellationToken.None).ConfigureAwait(false);
